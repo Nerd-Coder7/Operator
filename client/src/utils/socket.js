@@ -4,7 +4,7 @@ let socket;
 
 export const getSocket = () => {
   if (!socket) {
-    const ENDPOINT = "http://localhost:4800";
+    const ENDPOINT = "https://operator-steel.vercel.app";
     socket = socketIO(ENDPOINT, { transports: ["websocket"] });
   }
   return socket;

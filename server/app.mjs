@@ -13,16 +13,12 @@ import { allRouter } from "./routes/index.mjs";
 app.use(express.json({ limit: "50mb" }));
 app.use(morgan("dev"));
 app.use(cookieParser());
-console.log(process.env.ORIGIN,"ORIGIN")
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (process.env.ORIGIN.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+  // origin: process.env.ORIGIN,
+  origin: 'https://operator-steel.vercel.app', 
+  credentials: true, 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
+  allowedHeaders: ['Content-Type', 'Authorization'] 
 };
 
 paypal.configure({
