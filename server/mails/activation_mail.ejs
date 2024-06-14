@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Activation</title>
+    <style>
+        /* Reset styles */
+        body, h1, p, a {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Body styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container styles */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f3f0f0da;
+            border-radius: 10px;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        }
+
+        /* Heading styles */
+        h1 {
+            color: #333333;
+            font-size: 28px;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        /* Paragraph styles */
+        p {
+            color: #555555;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        /* Link styles */
+        a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        /* Button styles */
+        button {
+            display: inline-block;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #007bff;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            color: #ffffff;
+            font-weight: bolder;
+            margin-bottom: 10px;
+        }
+
+        button:hover {    
+            background-color: #fafafa;
+            color: black;
+        }
+
+        /* Strong styles */
+        strong {
+            color: #333333;
+            font-weight: bold;
+        }
+
+        /* Logo styles */
+        .logo {
+            display: block;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://aronwebsolutions.com/public/uploads/aron-logo-2.png" alt="Company Logo" class="logo">
+        <h1>Welcome <%= username %>!</h1>
+        <p>Thank you for signing up!</p>
+        <p>Please click the following button to activate your account:</p>
+        <a href="<%= activationLink %>" class="btn"><button>Activate Account</button></a>
+        <p>If the above button doesn't work, you can copy and paste the following activation code into your browser:</p>
+        <p>If you did not sign up for an account, please ignore this email.</p>
+        <p>Thank you,<br><strong>Aron Web Solution Ltd.</strong></p>
+    </div>
+</body>
+</html>
