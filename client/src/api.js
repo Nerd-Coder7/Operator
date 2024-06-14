@@ -6,8 +6,7 @@ import { LogoutUserT } from "./redux/actions/user";
 
 // Create an instance of axios
 const api = axios.create({
-  baseURL: 'http://localhost:4800/api/v1',
-//   baseURL: "https://alwaleed-cyberquiz-1.onrender.com/api/v1",
+  baseURL: `${process.env.REACT_APP_API_URI}/api/v1`,
   headers: {
     "Content-Type": "application/json",
   },
