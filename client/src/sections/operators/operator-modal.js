@@ -93,7 +93,7 @@ console.log(topUpMinutes,topUpAmount,operator?.operatorData?.pricingPerMinute)
         )}
       </DialogContent>
       <DialogActions>
-        {availableMinutes === 0 ? (
+        {availableMinutes === 0 || !availableMinutes ? (
           <Button onClick={handleAddMoney} color="primary">
             Add Money
           </Button>
