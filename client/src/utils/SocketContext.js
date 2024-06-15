@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { getSocket } from './socket';
+import { useLocation } from 'react-router-dom';
 
 const SocketContext = createContext();
 
@@ -7,7 +8,7 @@ export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
-
+ 
   useEffect(() => {
     const socketInstance = getSocket();
     console.log(socketInstance,"dsfdffd"

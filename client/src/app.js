@@ -1,4 +1,4 @@
-import { useNavigate, useRoutes } from "react-router-dom";
+import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { routes } from "./routes";
 import { createTheme } from "./theme";
@@ -9,6 +9,7 @@ import { loadOperators } from "./redux/actions/admin";
 import { loadUser, updateOnlineUsers } from "./redux/actions/user";
 import { SocketProvider, useSocket } from "./utils/SocketContext";
 import NotificationModal from "./sections/chat/NotificationModal";
+import api from "./api";
 // import socketIO from "socket.io-client";
 
 // const ENDPOINT = "http://localhost:4800";
@@ -27,8 +28,15 @@ export const App = () => {
     colorPreset: "green",
     contrast: "high",
   });
+const location = useLocation();
 
-  console.log(socket, "dfggf", onlineUsers);
+useEffect(()=>{
+  const params = new URLSearchParams(location.search);
+  const websiteParam = params.get('website');
+if(websiteParam){
+  sessionStorage.setItem("websiteID",websiteParam)
+}
+},[location?.search])
 
   useEffect(() => {
     if (user && socket && user.loggedIn === "Online") {
@@ -71,14 +79,16 @@ export const App = () => {
     }
   }, [user, socket, dispatch]);
 
-  const handleClose = () => {
+  const handleClose = async() => {
     if (conversationId) {
-      
+   await api.put("/user/update-user", {loggedIn:"Busy"});
+   socket.emit('status-change', { userId: user._id, status: 'Busy' });
       navigate(`/chat?${conversationId}`);
     } else {
+   await api.put("/user/update-user", {loggedIn:"Online"});
+   socket.emit('status-change', { userId: user._id, status: 'Online' });
       window.location.replace("/chat");
     }
-
     setModalOpen(false);
   };
 

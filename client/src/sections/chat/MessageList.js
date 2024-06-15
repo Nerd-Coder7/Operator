@@ -50,7 +50,7 @@ export const MessageList = ({
         <ListItemIcon>
           <Avatar
             alt={user?.name}
-            src={user?.image || "https://mui.com/static/images/avatar/1.jpg"}
+            src={`${process.env.REACT_APP_API_URI}/${user?.image}` || "https://mui.com/static/images/avatar/1.jpg"}
           />
         </ListItemIcon>
         <ListItemText primary={user?.name} />

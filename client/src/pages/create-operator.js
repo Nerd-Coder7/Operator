@@ -4,7 +4,11 @@ import {
   Button,
   Card,
   Container,
+  FormControl,
   FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
@@ -13,13 +17,14 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import api from "src/api";
-import * as Yup from "yup";
+import * as Yup from "yup"; 
 
 const initialValues = {
   password: "",
   email: "test.support@aron.com",
   name: "Test Jin",
   jobTitle: "Operator",
+  website:"A_Website",
   submit: null,
 };
 
@@ -43,6 +48,7 @@ const Page = () => {
         formData.append("name", values.name);
         formData.append("email", values.email);
         formData.append("password", values.password);
+        formData.append("website", values.website);
         formData.append("role", values.jobTitle);
         formData.append("image", selectedImage);
 
@@ -51,7 +57,6 @@ const Page = () => {
             "Content-Type":"multipart/form-data"
           }
         });
-        console.log(response);
         if (response.status === 201) {
           helpers.setStatus({ success: true });
 
@@ -192,6 +197,26 @@ variant="caption">
                         onChange={formik.handleChange}
                         value={formik.values.password}
                       />
+                       <FormControl
+                              error={Boolean(formik.touched.website && formik.errors.website)}
+                            >
+                              <InputLabel>Website</InputLabel>
+                              <Select
+                                label="Website"
+                                name="website"
+                                value={formik.values.website}
+                                onBlur={formik.handleBlur}
+                                onChange={formik.handleChange}
+                              >
+                                <MenuItem value="A_Website">A Website</MenuItem>
+                                <MenuItem value="B_Website">B Website</MenuItem>
+                                <MenuItem value="C_Website">C Website</MenuItem>
+                              </Select>
+                              {formik.touched.website && formik.errors.website && (
+                                <FormHelperText>{formik.errors.website}</FormHelperText>
+                              )}
+                            </FormControl>
+
                     </Stack>
                     {formik.errors.submit && (
                       <FormHelperText error

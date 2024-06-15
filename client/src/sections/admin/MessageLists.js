@@ -55,15 +55,7 @@ export const MessageList = ({
         </ListItemIcon>
         <ListItemText primary={data.groupTitle} />
 
-        {online ? (
-          <div
-            style={{ width: "13px", height: "13px", borderRadius: "50%", background: "green" }}
-          ></div>
-        ) : (
-          <div
-            style={{ width: "13px", height: "13px", borderRadius: "50%", background: "red" }}
-          ></div>
-        )}
+      
       </ListItem>
       {/* <div style={{textAlign:"",marginRight:"10px"}}>
       {data?.lastMessageId !== user?._id

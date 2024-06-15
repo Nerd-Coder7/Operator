@@ -24,9 +24,12 @@ const registerUser = catchAsyncError(async (req, res, next) => {
       });
       return next(new ErrorHandler("Email already exists", 400));
     }
+    let userObj;
+    if(req.file?.filename){
     const filename = req.file.filename;
     const fileUrl = path.join(filename);
-    const userObj = { ...req.body, image: fileUrl };
+     userObj = { ...req.body, image: fileUrl };}
+     userObj = { ...req.body };
     userObj.role = userObj.role.toLowerCase();
     if (userObj.role === "operator") {
       const createUser = await User.create({

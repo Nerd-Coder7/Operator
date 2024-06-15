@@ -43,7 +43,7 @@ const UserSchema = new Schema(
       required: true,
     },
     image:{type:String},
-    loggedIn:{type:String,enum:["Online","Offline","Break"],default: 'Offline'},
+    loggedIn:{type:String,enum:["Online","Offline","Break","Busy"],default: 'Offline'},
     // Role-specific data
     userData: userDataSchema,
     operatorData: OperatorSchema,

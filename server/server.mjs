@@ -48,6 +48,11 @@ io.on("connection", (socket) => {
     io.emit("getUsers", users);
   });
 
+
+
+  socket.on('status-change', (data) => {
+    io.emit('status-change', data);
+  });
   // send and get message
   const messages = {}; // Object to track messages sent to each user
 

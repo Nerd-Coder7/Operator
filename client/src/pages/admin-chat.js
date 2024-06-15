@@ -146,15 +146,7 @@ src={`${process.env.REACT_APP_API_URI}/${user?.image}`} />
               </ListItem>
             </List>
             <Divider />
-            <Grid item
-xs={12}
-style={{ padding: "10px" }}>
-              <TextField id="outlined-basic-email"
-label="Search"
-variant="outlined"
-fullWidth />
-            </Grid>
-            <Divider />
+      
             <List>
               {conversations &&
                 socketId &&

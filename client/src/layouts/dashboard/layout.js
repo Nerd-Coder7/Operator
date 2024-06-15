@@ -1,8 +1,11 @@
-import { styled } from '@mui/material/styles';
+import { styled,useTheme  } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { Footer } from './footer';
 import { SideNav } from './side-nav';
 import { TopNav } from './top-nav';
+import { useEffect, useState } from 'react';
+import { useMediaQuery } from '@mui/material';
+
 
 const SIDE_NAV_WIDTH = 73;
 const TOP_NAV_HEIGHT = 64;
@@ -27,11 +30,30 @@ const LayoutContainer = styled('div')({
 
 export const Layout = (props) => {
   const { children } = props;
+  const theme = useTheme();
+  const check = useMediaQuery(theme.breakpoints.down('lg'))
+  const [isMobile,setIsMobile] = useState(check);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const toggleDrawer = () => {
+    setIsDrawerOpen((prev) => !prev);
+  }
 
+  useEffect(()=>{
+    setIsMobile(check)
+  },[check]);
   return (
     <>
-      <TopNav />
-      <SideNav />
+      <TopNav 
+      isDrawerOpen={isDrawerOpen}
+      setIsDrawerOpen={setIsDrawerOpen}
+      toggleDrawer={toggleDrawer}
+      isMobile={isMobile}
+      />
+      <SideNav 
+      isDrawerOpen={isDrawerOpen}
+      toggleDrawer={toggleDrawer}
+      isMobile={isMobile}
+      />
       <LayoutRoot>
         <LayoutContainer>
           {children}

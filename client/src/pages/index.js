@@ -29,7 +29,6 @@ useEffect(()=>{
   const fetchData=async()=>{
     try{
       const allStats = await api.get("/user/admin/get-stats");
-      console.log(allStats)
       setOperator(allStats?.data.operators)
       setConversation(allStats?.data.conversations)
       const data = await api.get('/payment/transactions');

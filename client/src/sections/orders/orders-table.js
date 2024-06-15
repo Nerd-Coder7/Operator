@@ -47,6 +47,10 @@ const statusMap = {
     color: "neutral.500",
     label: "Break",
   },
+  Busy: {
+    color: "neutral.500",
+    label: "Busy",
+  },
   Delivered: {
     color: "warning.main",
     label: "Delivered",
@@ -216,19 +220,20 @@ console.log(editedOrder)
                           <MenuItem value={"Online"}>Online</MenuItem>
                           <MenuItem value={"Offline"}>Offline</MenuItem>
                           <MenuItem value={"Break"}>Break</MenuItem>
+                          <MenuItem value={"Busy"}>Busy</MenuItem>
                         </Select>
                       </FormControl>
                     ) : (
                       <Stack alignItems="center" direction="row" spacing={1}>
                         <Box
                           sx={{
-                            backgroundColor: status.color,
+                            backgroundColor: status?.color,
                             borderRadius: "50%",
                             height: 8,
                             width: 8,
                           }}
                         />
-                        <Typography variant="body2">{status.label}</Typography>
+                        <Typography variant="body2">{status?.label}</Typography>
                       </Stack>
                     )}
                   </TableCell>

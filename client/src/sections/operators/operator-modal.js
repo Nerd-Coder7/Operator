@@ -39,7 +39,7 @@ const OperatorModal = ({ open, handleClose, operator, user }) => {
   };
 
   const handleCreateChat = async () => {
-    const groupTitle = `${operator.name} ${user.name}`;
+    const groupTitle = `${operator._id} ${user._id}`;
     const userId = user._id;
     const operatorId = operator._id;
     await api

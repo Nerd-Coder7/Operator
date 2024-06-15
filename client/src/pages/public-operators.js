@@ -20,6 +20,7 @@ import { useSocket } from "src/utils/SocketContext";
 // const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 const Page = () => {
+  const websiteID = sessionStorage.getItem("websiteID")
   const state = useSelector((state) => state.admin);
   const [operators, setOperators] = useState(state.operators);
   const { user, users: onlineUsers } = useSelector((state) => state.user);
@@ -28,7 +29,9 @@ const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  console.log(operators, "dsfdsf", onlineUsers);
+  const socketId = useSocket(); 
+const [status,setStatus]=useState({})
+
   const [prevOnlineUsers, setPrevOnlineUsers] = useState([]);
   // useEffect(() => {
   //   if (user) {
@@ -42,6 +45,19 @@ const Page = () => {
   //     setLoading(false);
   //   }
   // }, [user]);
+  useEffect(() => {
+    const handleStatusChange = ({ userId, status }) => {
+      setStatus({userId,status})
+    };
+
+    if (socketId) {
+      socketId.on('status-change', handleStatusChange);
+
+      return () => {
+        socketId.off('status-change', handleStatusChange);
+      };
+    }
+  }, [socketId]);
   useEffect(()=>{
     const hasNewOperator = (newUsers, prevUsers) => {
       const newOperators = newUsers.filter(user => user.type === 'operator');
@@ -51,21 +67,20 @@ const Page = () => {
         return true;
       }
 
-      // Optionally, you can do a more sophisticated comparison here
-      // e.g., checking if there are any new operator IDs in newUsers
+     
       
       return newOperators.some(newOp => 
         !prevOperators.some(prevOp => prevOp.id === newOp.id)
       );
     };
 
-    if (hasNewOperator(onlineUsers, prevOnlineUsers)) {
+    if (hasNewOperator(onlineUsers, prevOnlineUsers) || status) {
       dispatch(loadOperators());
     }
 
     // Update the previous online users state
     setPrevOnlineUsers(onlineUsers);
-  }, [onlineUsers, dispatch]);
+  }, [onlineUsers, dispatch,status]);
 
   const onlineCheck = (chat) => {
     const online = onlineUsers.find((user) => user.userId === chat._id);
@@ -88,7 +103,7 @@ const Page = () => {
 
   const renderOperators = () => {
     const onlineOperators = operators.filter(
-      (operator) => onlineCheck(operator) && operator.loggedIn === "Online"
+      (operator) => onlineCheck(operator) && operator.loggedIn === "Online" && operator?.operatorData?.website===websiteID
     );
 
     const onlineBusyOperators = operators.filter(
@@ -112,11 +127,10 @@ const Page = () => {
         </Box>
       );
     }
-
     return (
       <Grid container spacing={2} sx={{ padding: 2 }}>
         {onlineOperators.map((operator) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={operator._id}>
+         <Grid item xs={12} sm={6} md={4} lg={3} key={operator._id}>
             <Card onClick={() => handleCardClick(operator)}>
               <CardContent>
                 <Grid container alignItems="center" spacing={2}>

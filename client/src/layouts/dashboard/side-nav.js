@@ -7,12 +7,13 @@ import { items } from './config';
 const SIDE_NAV_WIDTH = 73;
 const TOP_NAV_HEIGHT = 64;
 
-export const SideNav = () => {
+export const SideNav = ({isDrawerOpen,toggleDrawer,isMobile}) => {
   const location = useLocation();
   const { user } = useSelector((state) => state.user);
 const dispatch = useDispatch();
  
 const handleLogout=async()=>{
+  
   try{
 await dispatch(LogoutUserT())
   }catch(e){
@@ -22,8 +23,9 @@ console.log(e)
 
   return (
     <Drawer
-      open
-      variant="permanent"
+      open={isDrawerOpen}
+      variant={`${isMobile ? 'temporary' : 'permanent'}`}
+      onClose={toggleDrawer}
       PaperProps={{
         sx: {
           backgroundColor: 'background.default',
@@ -48,6 +50,7 @@ console.log(e)
                 component={RouterLink}
                 key={item.href}
                 to={item.href}
+                onClick={toggleDrawer}
                 sx={{
                   flexDirection: 'column',
                   px: 2,

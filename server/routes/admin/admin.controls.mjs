@@ -13,7 +13,7 @@ adminRouter.get("/get-all-admin-conversation/:id",isAuthenticated,isAdmin, getAl
 adminRouter.put("/admin/update-operator/:id",isAuthenticated,isAdmin,updateOperator);
 adminRouter.delete("/admin/delete-operator/:id", isAuthenticated,isAdmin, DeleteUser);
 
-adminRouter.get("/admin/get-stats", async (req, res, next) => {
+adminRouter.get("/admin/get-stats",isAuthenticated,isAdmin, async (req, res, next) => {
     try {
         // Find all operators and select their IDs
         const operators = await User.find({ role: 'operator' }).select('_id');

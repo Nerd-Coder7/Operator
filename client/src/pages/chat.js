@@ -1,7 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import DownloadIcon from "@mui/icons-material/Download";
 import SendIcon from "@mui/icons-material/Send";
-import { Button } from "@mui/material";
+import { Box, Button, ListItemAvatar, useMediaQuery, useTheme } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 import Fab from "@mui/material/Fab";
@@ -21,15 +21,18 @@ import api from "src/api";
 import { loadUser } from "src/redux/actions/user";
 import { MessageList } from "src/sections/chat/MessageList";
 import { useSocket } from "src/utils/SocketContext";
+import './chat.css'
 // import socketIO from "socket.io-client";
 
 // const ENDPOINT = "http://localhost:4800";
 // const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
+
 const Page = () => {
   const chatSectionStyle = {
     width: "100%",
-    height: "93vh",
+    height: "100%",
+    overflow: 'hidden'
   };
   const floatingTimerStyle = {
     position: "fixed",
@@ -45,15 +48,12 @@ const Page = () => {
   const borderRight500Style = {
     borderRight: "1px solid #e0e0e0",
   };
-
-  const messageAreaStyle = {
-    height: "80vh",
-    overflowY: "auto",
-  };
-
+  const theme = useTheme();
+  const check = useMediaQuery(theme.breakpoints.down('lg'))
   const navigate = useNavigate();
   const socketId = useSocket(); 
   const { user, users: onlineUsers } = useSelector((state) => state.user);
+  const {operators} = useSelector((state) => state.admin);
   const [active, setActive] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [arrivalMessage, setArrivalMessage] = useState(null);
@@ -71,7 +71,6 @@ const Page = () => {
   const conversationId = location.search.split("?")[1];
   const [elapsedTime, setElapsedTime] = useState("");
   const [previousMinute, setPreviousMinute] = useState(1);
-console.log(user,"User")
   const handleEndChat = () => {
     dispatch(loadUser());
     sessionStorage.removeItem("timeStart")
@@ -223,6 +222,11 @@ console.log(user,"User")
     return online ? true : false;
   };
 
+  const onlineCheckData = (chat) => {
+    const online = onlineUsers.find((user) => user.userId === chat?._id);
+    return online ? true : false;
+  };
+
   useEffect(() => {
     const getMessage = async () => {
       try {
@@ -367,272 +371,230 @@ console.log(user,"User")
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const handleCreateChat = async (operator) => {
+    const groupTitle = `${operator._id} ${user._id}`;
+    const userId = user._id;
+    const operatorId = operator._id;
 
+    await api.post('/chat/create-new-conversation', {
+      groupTitle,
+      userId,
+      operatorId,
+    }).then((res) => {
+      navigate(`/chat?${res.data.conversation._id}`);
+    }).catch((error) => {
+      console.error(error.response.data.message);
+    });
+  };
 
+  const filteredOperators = operators.filter(operator =>
+    operator.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   return (
-    <div>
-      <Helmet>
-        <title>Chat Box</title>
-      </Helmet>
-      <Grid container component={Paper} style={chatSectionStyle}>
-        {user?.role !== "user" && (
-          <Grid item xs={3} style={borderRight500Style}>
-             <List>
-              <ListItem button
-key="RemySharp">
-                <ListItemIcon>
-                  <Avatar alt={user?.name}
-src={`${process.env.REACT_APP_API_URI}/${user?.image}`} />
-                </ListItemIcon>
-                <ListItemText primary={user?.name} />
-              </ListItem>
-            </List>
-            <Divider />
-          {user?.role === "admin" &&  <Grid item xs={12} style={{ padding: "10px" }}>
-              <TextField id="outlined-basic-email" label="Search" variant="outlined" fullWidth />
-            </Grid>}
-            <Divider />
-            <List>
-              {conversations &&
-                socketId &&
-                conversations.map((item, index) => (
-                  <MessageList
-                    data={item}
-                    key={index}
-                    index={index}
-                    active={active}
-                    setActive={setActive}
-                    setOpen={setOpen}
-                    setCurrentChat={setCurrentChat}
-                    me={user?._id}
-                    setUserData={setUserData}
-                    userData={userData}
-                    online={onlineCheck(item)}
-                  />
-                ))}
-            </List>
+    <div className="chat_wrapper">
+    <Helmet>
+      <title>Chat Box</title>
+    </Helmet>
+    <Grid className="ChatAreaWrapper" container component={Paper} style={chatSectionStyle}>
+      {user?.role !== "user" && !check  && (
+        <Grid className="ChatUsersList" item xs={3} style={borderRight500Style}>
+          <List>
+            <ListItem button key="Inbox">
+              <ListItemText primary={"Inbox"} />
+            </ListItem>
+          </List>
+          <Divider />
+          {user?.role === 'admin' && (
+          <Grid item xs={12} style={{ padding: '10px' }}>
+            <TextField
+              id="outlined-basic-email"
+              label="Search Operators"
+              variant="outlined"
+              fullWidth
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </Grid>
         )}
-        {open ? (
-          <Grid item xs={user.role === "user" ? 12 : 9}>
-            <List style={messageAreaStyle}>
-              {messages &&
-                messages.map((item, index) => (
-                  <Grid
-                    p={4}
-                    justifyContent={item.sender === user?._id ? "flex-end" : "flex-start"}
-                    container
-                    key={index}
-                    ref={scrollRef}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: item.sender === user?._id ? "flex-end" : "flex-start",
-                      }}
-                    >
-                      {item.images &&
-                        item.images.map((img, index) => (
-                          <div key={index} style={{ position: "relative" }}>
-                            <img
-                              src={
-                                img.split(":")[0] === "blob"
-                                  ? img
-                                  : `${process.env.REACT_APP_API_URI}/${img}`
-                              }
-                              alt="Sent"
-                              style={{
-                                width: "300px",
-                                height: "300px",
-                                objectFit: "cover",
-                                borderRadius: "10px",
-                                cursor: "pointer",
-                                marginTop: "10px",
-                                border: "1px solid grey",
-                              }}
-                              onClick={() =>
-                                handleImageClick(
-                                  img.split(":")[0] === "blob"
-                                    ? img
-                                    : `${process.env.REACT_APP_API_URI}/${img}`
-                                )
-                              }
-                            />
-                            <DownloadIcon
-                              style={{
-                                position: "absolute",
-                                top: "10px",
-                                right: "10px",
-                                cursor: "pointer",
-                                color: "grey",
-                              }}
-                              onClick={() =>
-                                handleDownload(
-                                  img.split(":")[0] === "blob"
-                                    ? img
-                                    : `${process.env.REACT_APP_API_URI}/${img}`
-                                )
-                              }
-                            />
-                          </div>
-                        ))}
+         <Grid item xs={12}>
+          <List>
+            {filteredOperators.map((operator) => (
+              <ListItem
+                button
+                key={operator._id}
+                onClick={() => handleCreateChat(operator)}
+              >
+                <ListItemAvatar>
+                  <Avatar alt={operator.name} src={`${process.env.REACT_APP_API_URI}/${operator.image}`} />
+                </ListItemAvatar>
+                <ListItemText primary={operator.name} />
+              </ListItem>
+            ))}
+          </List>
+        </Grid>
+          <Divider />
+          <List>
+            {conversations && socketId && conversations.map((item, index) => (
+              <MessageList
+                data={item}
+                key={index}
+                index={index}
+                active={active}
+                setActive={setActive}
+                setOpen={setOpen}
+                setCurrentChat={setCurrentChat}
+                me={user?._id}
+                setUserData={setUserData}
+                userData={userData}
+                online={onlineCheck(item)}
+              />
+            ))}
+          </List>
+        </Grid>
+      )}
 
-                      {item.text !== "" && item.text && (
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "10px",
-                            flexDirection: item.sender === user?._id ? "row-reverse" : "row",
-                          }}
-                        >
-                          <Avatar
-                            src={
-                              item.sender === user?._id
-                                ? `${process.env.REACT_APP_API_URI}/${user?.image}`
-                                : `${process.env.REACT_APP_API_URI}/${userData?.image}`
-                            }
-                          />
-                          <div
-                            style={{
-                              background:
-                                item.sender === user?._id
-                                  ? "rgb(18 183 106)"
-                                  : "hsl(240deg 7% 62% / 30%)",
-                              borderRadius:
-                                item.sender === user?._id ? "1rem 1rem 0" : "1rem 1rem 1rem 0",
-                              padding: "10px 20px",
-                              width: item?.text?.length > 70 ? "300px" : "auto",
-                            }}
-                          >
-                            <Grid
-                              item
-                              xs={12}
-                              color={item.sender === user?._id ? "white" : "black"}
-                              fontWeight={"bold"}
-                            >
-                              <ListItemText sx={{ fontSize: "100px" }} primary={item.text} />
-                            </Grid>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </Grid>
-                ))}
-            </List>
-            <Divider />
-            <Grid container style={{ padding: "20px", alignItems: "center" }}>
-              <Grid item xs={11}>
-                {/* <input
-                  type="file"
-                  accept=".jpeg,.png,.jpg,.webp"
-                  onChange={handleImageSelect}
-                  multiple
-                  style={{ display: "none" }}
-                  id="image-upload"
-                /> */}
-                {/* <label htmlFor="image-upload">
-                  <Fab component="span" color="secondary">
-                    <DownloadIcon />
-                  </Fab>
-                </label> */}
-                {/* {selectedImages.length > 0 && (
-                  <Grid
-                    container
-                    spacing={2}
-                    style={{ padding: "20px", display: "flex", flexWrap: "wrap" }}
-                  >
-                    {selectedImages.map((image, index) => (
-                      <Grid item key={index} style={{ position: "relative" }}>
-                        <img
-                          src={URL.createObjectURL(image)}
-                          alt={`Selected ${index}`}
-                          style={{
-                            width: "100px",
-                            height: "100px",
-                            borderRadius: "10px",
-                            objectFit: "cover",
-                          }}
-                        />
-                        <IconButton
-                          size="small"
-                          style={{
-                            position: "absolute",
-                            top: "5px",
-                            right: "5px",
-                            backgroundColor: "white",
-                            borderRadius: "50%",
-                          }}
-                          onClick={() => handleImageRemove(index)}
-                        >
-                          <CloseIcon fontSize="small" />
-                        </IconButton>
-                      </Grid>
-                    ))}
-                  </Grid>
-                )} */}
-                <TextField
-                  id="outlined-basic-email"
-                  label="Type Something"
-                  value={newMessage}
-                  onKeyDown={handleMessageKey}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  fullWidth
-                  style={{ marginTop: "10px", marginLeft: "10px" }}
-                />
-              </Grid>
-              <Grid item xs={1} align="right">
-                <Fab onClick={handleMessage} color="primary" aria-label="send">
-                  <SendIcon />
-                </Fab>
-              </Grid>
+      {(check && !open) && (
+        <Grid className="ChatUsersList" item xs={12} style={borderRight500Style}>
+          <List>
+            <ListItem button key="Inbox">
+              <ListItemText primary={"Inbox"} />
+            </ListItem>
+          </List>
+          <Divider />
+          {user?.role === "admin" && (
+            <Grid item xs={12} style={{ padding: "10px" }}>
+              <TextField id="outlined-basic-email" label="Search" variant="outlined" fullWidth />
             </Grid>
-            <div>
-              {elapsedTime && user?.role==="user" && (
-                <div style={floatingTimerStyle}>
-                  <p>Time since chat started: {elapsedTime}</p>
-                  <Button onClick={handleEndChat} color="secondary">
-                    End chat
-                  </Button>
-                </div>
-              )}
+          )}
+          <Divider />
+          <List>
+            {conversations && socketId && conversations.map((item, index) => (
+              <MessageList
+                data={item}
+                key={index}
+                index={index}
+                active={active}
+                setActive={setActive}
+                setOpen={setOpen}
+                setCurrentChat={setCurrentChat}
+                me={user?._id}
+                setUserData={setUserData}
+                userData={userData}
+                online={onlineCheck(item)}
+              />
+            ))}
+          </List>
+        </Grid>
+      )}
+
+      {open ? (
+        <Grid className={`ChattingUserWrap ${open ? 'openChat' : ''}`} sx={{ flexDirection: 'column' }} item xs={user.role === "user" ? 12 : 9}>
+          <div className="ChattingUserWrap_inner">
+            <div className="chat_header">
+              <ListItem button key="RemySharp">
+                <Box sx={{ position: 'relative', display: 'inline-flex', marginRight: "10px" }}>
+                  <Avatar
+                    src={
+                      process.env.REACT_APP_API_URI + "/" + userData?.image ||
+                      "/assets/avatars/avatar-chen-simmons.jpg"
+                    }
+                    variant="rounded"
+                  />
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 0,
+                      right: 0,
+                      width: 13,
+                      height: 13,
+                      borderRadius: '50%',
+                      backgroundColor: onlineCheckData(userData) ? 'green' : 'red',
+                      border: '2px solid white',
+                    }}
+                  />
+                </Box>
+                <ListItemText primary={userData?.name} />
+              </ListItem>
+              <List>
+            <ListItem onClick={()=>{setOpen(false)
+            setActive(null)
+          navigate("/chat")
+            }} button key="Inbox">
+              <ListItemText primary={"Back"} />
+            </ListItem>
+          </List>
             </div>
+            <List>
+              {messages && messages.map((item, index) => (
+                <Grid p={4} justifyContent={item.sender === user?._id ? "flex-end" : "flex-start"} container key={index} ref={scrollRef}>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: item.sender === user?._id ? "flex-end" : "flex-start" }}>
+                    {item.images && item.images.map((img, imgIndex) => (
+                      <div key={imgIndex} style={{ position: "relative" }}>
+                        <img
+                          src={img.split(":")[0] === "blob" ? img : `${process.env.REACT_APP_API_URI}/${img}`}
+                          alt="Sent"
+                          style={{ width: "300px", height: "300px", objectFit: "cover", borderRadius: "10px", cursor: "pointer", marginTop: "10px", border: "1px solid grey" }}
+                          onClick={() => handleImageClick(img.split(":")[0] === "blob" ? img : `${process.env.REACT_APP_API_URI}/${img}`)}
+                        />
+                        <DownloadIcon
+                          style={{ position: "absolute", top: "10px", right: "10px", cursor: "pointer", color: "grey" }}
+                          onClick={() => handleDownload(img.split(":")[0] === "blob" ? img : `${process.env.REACT_APP_API_URI}/${img}`)}
+                        />
+                      </div>
+                    ))}
+                    {item.text && (
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", flexDirection: item.sender === user?._id ? "row-reverse" : "row" }}>
+                        <Avatar src={item.sender === user?._id ? `${process.env.REACT_APP_API_URI}/${user?.image}` : `${process.env.REACT_APP_API_URI}/${userData?.image}`} />
+                        <div style={{ background: item.sender === user?._id ? "rgb(18 183 106)" : "hsl(240deg 7% 62% / 30%)", borderRadius: item.sender === user?._id ? "1rem 1rem 0" : "1rem 1rem 1rem 0", padding: "10px 20px", width: item?.text?.length > 70 ? "300px" : "auto" }}>
+                          <Grid item xs={12} color={item.sender === user?._id ? "white" : "black"} fontWeight={"bold"}>
+                            <ListItemText sx={{ fontSize: "100px" }} primary={item.text} />
+                          </Grid>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </Grid>
+              ))}
+            </List>
+          </div>
+          <Grid className="messageTyper_wrap" container style={{ padding: "20px", alignItems: "center" }}>
+            <Grid item className="messageTyper">
+              <TextField sx={{ width: '100%' }} id="outlined-basic-email" placeholder="Type Something" multiline maxRows={3} value={newMessage} onKeyDown={handleMessageKey} onChange={(e) => setNewMessage(e.target.value)} />
+            </Grid>
+            <Grid item className="MessageSend">
+              <Fab onClick={handleMessage} color="primary" aria-label="send">
+                <SendIcon />
+              </Fab>
+            </Grid>
           </Grid>
-        ) : (
+          <div>
+            {elapsedTime && user?.role === "user" && (
+              <div style={floatingTimerStyle}>
+                <p>Time since chat started: {elapsedTime}</p>
+                <Button onClick={handleEndChat} color="secondary">
+                  End chat
+                </Button>
+              </div>
+            )}
+          </div>
+        </Grid>
+      ) : (
+        !check && (
           <Grid item xs={9} justifyContent={"center"}>
             <div>Select an Inbox</div>
           </Grid>
-        )}
-      </Grid>
-      <Modal
-        open={!!zoomImage}
-        onClose={handleCloseZoom}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div style={{ position: "relative", background: "grey" }}>
-          <img
-            src={zoomImage}
-            alt="Zoom"
-            style={{ width: "600px", height: "600px", objectFit: "contain", margin: "auto" }}
-          />
-          <CloseIcon
-            style={{
-              position: "absolute",
-              top: "10px",
-              right: "10px",
-              cursor: "pointer",
-              color: "white",
-            }}
-            onClick={handleCloseZoom}
-          />
-        </div>
-      </Modal>
-    </div>
+        )
+      )}
+    </Grid>
+    <Modal open={!!zoomImage} onClose={handleCloseZoom} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ position: "relative", background: "grey" }}>
+        <img src={zoomImage} alt="Zoom" style={{ width: "600px", height: "600px", objectFit: "contain", margin: "auto" }} />
+        <CloseIcon style={{ position: "absolute", top: "10px", right: "10px", cursor: "pointer", color: "white" }} onClick={handleCloseZoom} />
+      </div>
+    </Modal>
+  </div>
+  
   );
 };
 

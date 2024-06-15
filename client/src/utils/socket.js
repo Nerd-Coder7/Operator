@@ -4,7 +4,7 @@ let socket;
 
 export const getSocket = () => {
   if (!socket) {
-    const ENDPOINT = "https://operator-steel.vercel.app";
+    const ENDPOINT = process.env.REACT_APP_API_URI;
     socket = socketIO(ENDPOINT, { transports: ["websocket"] });
   }
   return socket;

@@ -1,11 +1,12 @@
-import { Avatar, Box, Stack, Typography } from "@mui/material";
+import { Avatar, Box, IconButton, Stack, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
+import MenuIcon from '@mui/icons-material/Menu';
 import { Logo } from "src/components/logo";
 
 const TOP_NAV_HEIGHT = 64;
 
-export const TopNav = () => {
+export const TopNav = ({toggleDrawer,isMobile}) => {
   const { user, users: onlineUsers } = useSelector((state) => state.user);
 
   const onlineCheck = (chat) => {
@@ -32,7 +33,11 @@ export const TopNav = () => {
           px: 3,
         }}
       >
-        <Stack alignItems="center" direction="row" spacing={3}>
+        <Stack alignItems="center" direction="row" spacing={2}>
+          {isMobile && <IconButton sx={{padding: '0'}} onClick={toggleDrawer}>
+          <MenuIcon />
+        </IconButton> }
+        
           <Box
             component={RouterLink}
             to="/"
