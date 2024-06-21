@@ -418,26 +418,26 @@ console.log(items,"items")
           </TableBody>
         </Table>
         <Dialog
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Are you absolutely sure you want to delete the operator? This action cannot be undone.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="secondary">
-              Cancel
-            </Button>
-            <Button onClick={handleFinalDelete} color="primary" autoFocus>
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">Conferma Eliminazione</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          Sei sicuro di voler eliminare definitivamente l'operatore? Questa azione non può essere annullata.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="secondary">
+          Annulla
+        </Button>
+        <Button onClick={handleFinalDelete} color="primary" autoFocus>
+          Conferma
+        </Button>
+      </DialogActions>
+    </Dialog>
       </Scrollbar>
       <Divider />
       <TablePagination

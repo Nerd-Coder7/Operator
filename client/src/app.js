@@ -1,15 +1,14 @@
-import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { routes } from "./routes";
-import { createTheme } from "./theme";
-import "simplebar-react/dist/simplebar.min.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loadOperators } from "./redux/actions/admin";
-import { loadUser, updateOnlineUsers } from "./redux/actions/user";
-import { SocketProvider, useSocket } from "./utils/SocketContext";
-import NotificationModal from "./sections/chat/NotificationModal";
+import { useLocation, useNavigate, useRoutes } from "react-router-dom";
+import "simplebar-react/dist/simplebar.min.css";
 import api from "./api";
+import { loadUser, updateOnlineUsers } from "./redux/actions/user";
+import { routes } from "./routes";
+import NotificationModal from "./sections/chat/NotificationModal";
+import { createTheme } from "./theme";
+import { useSocket } from "./utils/SocketContext";
 // import socketIO from "socket.io-client";
 
 // const ENDPOINT = "http://localhost:4800";
@@ -133,6 +132,7 @@ if(websiteParam){
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      {/* <GoogleTranslate/> */}
       <NotificationModal
         open={modalOpen}
         handleClose={handleClose}

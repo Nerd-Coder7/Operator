@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Modal, Box, Typography, Button, Stack } from '@mui/material';
 
-const NotificationModal = ({ open, handleClose,handleReject,conversationId, userId,message }) => {
+const NotificationModal = ({ open, handleClose, handleReject, conversationId, userId, message }) => {
   const audio = new Audio('/assets/message-notification.mp3');
 
   useEffect(() => {
@@ -13,7 +13,7 @@ const NotificationModal = ({ open, handleClose,handleReject,conversationId, user
   return (
     <Modal
       open={open}
-    //   onClose={handleClose}
+      //   onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
@@ -29,50 +29,46 @@ const NotificationModal = ({ open, handleClose,handleReject,conversationId, user
         p: 4 
       }}>
         <Typography id="modal-modal-title" variant="h6" component="h2">
-         Notification
+          Notifica
         </Typography>
         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-         {message} {userId}.
+          {message} {userId}.
         </Typography>
-     {conversationId?   
-     <Stack gap="10px" sx={{flexDirection: 'row'}}>
-     <Button 
-          variant="contained" 
-          color="primary" 
-          onClick={() => {
-            handleClose();
-          }}
-          sx={{ mt: 2 }}
-        >
-          Accept
-        </Button>     
-        <Button 
-          variant="contained" 
-          color="error" 
-          onClick={() => {
-            handleReject();
-          }}
-          sx={{ mt: 2 }}
-        >
-          Reject
-        </Button>
-        </Stack>
-
-        
-        
-        
-    :
-    <Button 
-    variant="contained" 
-    color="primary" 
-    onClick={() => {
-      handleClose();
-    }}
-    sx={{ mt: 2 }}
-  >
-    Close
-  </Button>
-    }
+        {conversationId ? (
+          <Stack gap="10px" sx={{ flexDirection: 'row' }}>
+            <Button 
+              variant="contained" 
+              color="primary" 
+              onClick={() => {
+                handleClose();
+              }}
+              sx={{ mt: 2 }}
+            >
+              Accetta
+            </Button>
+            <Button 
+              variant="contained" 
+              color="error" 
+              onClick={() => {
+                handleReject();
+              }}
+              sx={{ mt: 2 }}
+            >
+              Rifiuta
+            </Button>
+          </Stack>
+        ) : (
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={() => {
+              handleClose();
+            }}
+            sx={{ mt: 2 }}
+          >
+            Chiudi
+          </Button>
+        )}
       </Box>
     </Modal>
   );

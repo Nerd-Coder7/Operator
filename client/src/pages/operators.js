@@ -94,7 +94,7 @@ const Page = () => {
               justifyContent="space-between"
               spacing={3}
             >
-              <Typography variant="h4">Operators</Typography>
+              <Typography variant="h4">OPERATORI</Typography>
               <Link to={"/operators-create"}>
                 <Button color="primary" size="large" variant="contained">
                   Add

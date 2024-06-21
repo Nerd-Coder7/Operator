@@ -45,10 +45,10 @@ useEffect(()=>{
 },[])
 
   return(
-  <>
+    <>
     <Helmet>
       <title>
-        Overview 
+        Panoramica
       </title>
     </Helmet>
     <Box
@@ -61,7 +61,7 @@ useEffect(()=>{
         <Stack spacing={3}>
           <div>
             <Typography variant="h4">
-              Reports
+              Rapporti
             </Typography>
           </div>
           <div>
@@ -88,7 +88,7 @@ useEffect(()=>{
                       </SvgIcon>
                     </Avatar>
                   }
-                  label='Operators'
+                  label='Operatori'
                   value={operator.length}
                 />
               </Grid>
@@ -111,8 +111,7 @@ useEffect(()=>{
                       </SvgIcon>
                     </Avatar>
                   }
-                  label='Transactions'
-             
+                  label='Transazioni'
                   value={transaction.length}
                 />
               </Grid>
@@ -135,11 +134,10 @@ useEffect(()=>{
                       </SvgIcon>
                     </Avatar>
                   }
-                  label='Revenue'
+                  label='Entrate'
                   value={completedTransaction}
                 />
               </Grid>
-           
               <Grid xs={12}>
                 <OverviewLatestCustomers
                   customers={transaction}

@@ -24,9 +24,14 @@ const corsOptions = {
 
 paypal.configure({
   "mode":'sandbox',
-  "client_id": "AfcMmK9NTk_xMdkk9Y1MAyG0H3WezrRYPGfeOFVqROpDNsRbxgyo7KXByFcyXZJCdHKtlgzPSQnJPA5H",
-  "client_secret": 'EKU2b6KgrFtKWD-l81EgyXDmqP1RIMzZw2LS17g9WHU3YTrVolJjHBH68Jbkv6kVro9Ozdh2bj_Xd80j',
+  "client_id": "AX6923l9wsuCrhtwNQxBGObDVIf6uYmljXjLwaZOeaLSvBijJJwnYllebRA9368GTzQCSM67PzKeHUq0",
+  "client_secret": 'EK4X4QGpIAgRwr46MlnxwloV2jEMkOyRL69AQLJoOfUcr5NaYEDLJ45v-ywCriuX-JJViM3eeogjZlQ8',
 });
+// paypal.configure({
+//   "mode":'sandbox',
+//   "client_id": "AfcMmK9NTk_xMdkk9Y1MAyG0H3WezrRYPGfeOFVqROpDNsRbxgyo7KXByFcyXZJCdHKtlgzPSQnJPA5H",
+//   "client_secret": 'EKU2b6KgrFtKWD-l81EgyXDmqP1RIMzZw2LS17g9WHU3YTrVolJjHBH68Jbkv6kVro9Ozdh2bj_Xd80j',
+// });
 
 app.use("/", express.static("./utils/uploads"));
 app.use(cors(corsOptions));
