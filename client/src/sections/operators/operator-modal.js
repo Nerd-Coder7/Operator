@@ -25,6 +25,9 @@ const OperatorModal = ({ open, handleClose, operator, user }) => {
     setTopUpAmount(event.target.value);
   };
 
+
+  console.log(availableMinutes,"hfshdfg")
+  
   const handleAddMoney = async () => {
     const userId = user._id;
     const operatorId = operator._id;
@@ -57,6 +60,8 @@ const OperatorModal = ({ open, handleClose, operator, user }) => {
         });
         navigate(`/chat?${res.data.conversation._id}`);
         sessionStorage.setItem('timeStart',Date.now())
+
+
       })
       .catch((error) => {
         console.error(error.response.data.message);

@@ -28,7 +28,7 @@ export const OverviewLatestCustomers = (props) => {
             color="inherit"
           onClick={()=>lenght>5?setLength(5):setLength(customers?.length)}
           >
-           {lenght>5?"View less": "View All" }
+           {lenght>5?"View less":customers?.length>5 && "View All" }
           </Button>
         )}
         title="Latest Transactions"
@@ -87,17 +87,24 @@ export const OverviewLatestCustomers = (props) => {
                         {amountSpent}
                       </Typography>
                       {' '}
-                      spent
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
-                    {customer?.status?.toLowerCase()==="completed" && (
+                    {customer?.status?.toLowerCase()==="completed" ? (
                       <Chip
                         color="primary"
-                        label="Placed"
+                        label="Completed"
                         size="small"
                       />
-                    )}
+                    ):
+                    (
+                      <Chip
+                        color="warning"
+                        label="Retry"
+                        size="small"
+                      />
+                    )
+                    }
                   </TableCell>
                 </TableRow>
               );

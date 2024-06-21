@@ -101,10 +101,14 @@ const [status,setStatus]=useState({})
     setSelectedOperator(null);
   };
 
+ console.log(websiteID,"website",operators,"operator--------------")
+
   const renderOperators = () => {
     const onlineOperators = operators.filter(
-      (operator) => onlineCheck(operator) && operator.loggedIn === "Online" && operator?.operatorData?.website===websiteID
-    );
+  (operator) => onlineCheck(operator) && operator.loggedIn === "Online" && operator?.operatorData?.website?.some(el=>el===websiteID)
+);
+    console.log(onlineOperators,"operator")
+ 
 
     const onlineBusyOperators = operators.filter(
       (operator) => onlineCheck(operator) && operator.loggedIn === "Busy"

@@ -1,7 +1,15 @@
-import React from 'react';
-import { Modal, Box, Typography, Button } from '@mui/material';
+import React, { useEffect } from 'react';
+import { Modal, Box, Typography, Button, Stack } from '@mui/material';
 
-const NotificationModal = ({ open, handleClose, conversationId, userId,message }) => {
+const NotificationModal = ({ open, handleClose,handleReject,conversationId, userId,message }) => {
+  const audio = new Audio('/assets/message-notification.mp3');
+
+  useEffect(() => {
+    if (open) {
+      audio.play();
+    }
+  }, [open]);
+
   return (
     <Modal
       open={open}
@@ -26,7 +34,9 @@ const NotificationModal = ({ open, handleClose, conversationId, userId,message }
         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
          {message} {userId}.
         </Typography>
-     {conversationId?   <Button 
+     {conversationId?   
+     <Stack gap="10px" sx={{flexDirection: 'row'}}>
+     <Button 
           variant="contained" 
           color="primary" 
           onClick={() => {
@@ -35,7 +45,21 @@ const NotificationModal = ({ open, handleClose, conversationId, userId,message }
           sx={{ mt: 2 }}
         >
           Accept
+        </Button>     
+        <Button 
+          variant="contained" 
+          color="error" 
+          onClick={() => {
+            handleReject();
+          }}
+          sx={{ mt: 2 }}
+        >
+          Reject
         </Button>
+        </Stack>
+
+        
+        
         
     :
     <Button 

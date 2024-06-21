@@ -17,7 +17,10 @@ const getAllOperators = catchAsyncError(async (req, res, next) => {
 
 const updateOperator = catchAsyncError(async (req, res, next) => {
   try {
+
+    console.log("body", req.body);
     const {_id,...other}=req.body;
+
     const {pricingPerMinute,webiste,...all}=other;
    const user= await User.findByIdAndUpdate({ _id: req.params.id },{...all},{new:true});
   if(pricingPerMinute) user.operatorData.pricingPerMinute=pricingPerMinute;

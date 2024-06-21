@@ -24,7 +24,9 @@ const initialValues = {
   email: "test.support@aron.com",
   name: "Test Jin",
   jobTitle: "Operator",
-  website:"A_Website",
+  // website:"A_Website",
+  website: [],
+  shortDiscription:"",
   submit: null,
 };
 
@@ -33,24 +35,34 @@ const validationSchema = Yup.object({
   email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
   name: Yup.string().max(255).required("Name is required"),
   jobTitle: Yup.string().max(255).required("Job title is required"),
+  website: Yup.array().min(1, "At least one website is required").required("Website is required"),
 });
+
+
 
 const Page = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
 
   const formik = useFormik({
+    
     initialValues,
     validationSchema,
+
     onSubmit: async (values, helpers) => {
+      console.log(values,"website----------")
       try {
         const formData = new FormData();
         formData.append("name", values.name);
         formData.append("email", values.email);
         formData.append("password", values.password);
-        formData.append("website", values.website);
-        formData.append("role", values.jobTitle);
+        formData.append("shortDiscription", values.shortDiscription);
+        values.website.forEach((item) => formData.append("website[]", item))
+    //  formData.append("website", JSON.stringify(values.website));
+  formData.append("role", values.jobTitle);
         formData.append("image", selectedImage);
+
+
 
         const response = await api.post("/user/register", formData,{
           headers:{
@@ -62,16 +74,21 @@ const Page = () => {
 
           helpers.setSubmitting(false);
           helpers.resetForm();
+          alert('Operator created successfully')
         } else {
+         
           helpers.setStatus({ success: false });
           helpers.setErrors({ submit: "Something went wrong!" });
           helpers.setSubmitting(false);
         }
       } catch (error) {
+    
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: error?.response?.data?.message });
         helpers.setSubmitting(false);
       }
+
+    
     },
   });
   const handleImageChange = (event) => {
@@ -197,6 +214,17 @@ variant="caption">
                         onChange={formik.handleChange}
                         value={formik.values.password}
                       />
+                         <TextField
+                             multiline 
+                        error={Boolean(formik.touched.password && formik.errors.password)}
+                        fullWidth
+                        helperText={formik.touched.password && formik.errors.password}
+                        label="Short Discription"
+                        name="shortDiscription"
+                        onBlur={formik.handleBlur}
+                        onChange={formik.handleChange}
+                        value={formik.values.shortDiscription}
+                      />
                        <FormControl
                               error={Boolean(formik.touched.website && formik.errors.website)}
                             >
@@ -207,6 +235,7 @@ variant="caption">
                                 value={formik.values.website}
                                 onBlur={formik.handleBlur}
                                 onChange={formik.handleChange}
+                                multiple
                               >
                                 <MenuItem value="A_Website">A Website</MenuItem>
                                 <MenuItem value="B_Website">B Website</MenuItem>

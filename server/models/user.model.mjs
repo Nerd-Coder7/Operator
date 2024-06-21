@@ -9,7 +9,8 @@ const emailRegexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // Define role-specific schemas
 const OperatorSchema = new Schema({
  pricingPerMinute:Number,
- website:String,
+ website:[String],
+ 
 });
 
 
@@ -45,6 +46,7 @@ const UserSchema = new Schema(
     image:{type:String},
     loggedIn:{type:String,enum:["Online","Offline","Break","Busy"],default: 'Offline'},
     // Role-specific data
+    shortDiscription: {type:String},
     userData: userDataSchema,
     operatorData: OperatorSchema,
     isVerified: Boolean,

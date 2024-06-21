@@ -12,6 +12,7 @@ import {
   import { useFormik } from "formik";
   import { useState } from "react";
   import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
   import api from "src/api";
   import * as Yup from "yup";
   
@@ -31,7 +32,8 @@ import {
   const Page = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
-  
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+
     const formik = useFormik({
       initialValues,
       validationSchema,
@@ -42,7 +44,9 @@ import {
           formData.append("email", values.email);
           formData.append("password", values.password);
           formData.append("role", "user");
-          formData.append("image", selectedImage);
+          if(selectedImage){
+            formData.append("image", selectedImage);
+          }
   
           const response = await api.post("/user/register", formData, {
             headers: {
@@ -55,6 +59,7 @@ import {
   
             helpers.setSubmitting(false);
             helpers.resetForm();
+            alert('You are register successfully')
           } else {
             helpers.setStatus({ success: false });
             helpers.setErrors({ submit: "Something went wrong!" });
@@ -185,6 +190,9 @@ import {
                         <Button color="primary" size="large" type="submit" variant="contained">
                           Register
                         </Button>
+                        <Box marginTop={1} textAlign={'end'}>
+                    <Link  to="/login">I have an account</Link>
+                  </Box>
                       </Box>
                     </Box>
                   </form>
@@ -192,7 +200,9 @@ import {
               </Box>
             </Stack>
           </Container>
+          
         </Box>
+        
       </>
     );
   };

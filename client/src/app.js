@@ -21,6 +21,7 @@ export const App = () => {
   const [conversationId, setConversationId] = useState(null);
   const [userId, setUserId] = useState(null);
   const socket = useSocket();
+  const socketId = useSocket(); 
   const element = useRoutes(routes);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,9 +31,14 @@ export const App = () => {
   });
 const location = useLocation();
 
+
+
+
 useEffect(()=>{
   const params = new URLSearchParams(location.search);
   const websiteParam = params.get('website');
+ 
+
 if(websiteParam){
   sessionStorage.setItem("websiteID",websiteParam)
 }
@@ -47,10 +53,13 @@ if(websiteParam){
         setConversationId(conversationId);
         setUserId(userId);
         setModalOpen(true);
+        
       });
 
       socket.on("notifyEndConversation", ({ conversationId, userId }) => {
+    
         setMessage("User has ended conversation");
+      
         setConversationId(null);
         setUserId(userId);
         setModalOpen(true);
@@ -81,17 +90,32 @@ if(websiteParam){
 
   const handleClose = async() => {
     if (conversationId) {
+      socketId.emit("acceptConversation", {
+        operatorId:userId,
+        conversationId,
+      });
    await api.put("/user/update-user", {loggedIn:"Busy"});
    socket.emit('status-change', { userId: user._id, status: 'Busy' });
       navigate(`/chat?${conversationId}`);
     } else {
    await api.put("/user/update-user", {loggedIn:"Online"});
    socket.emit('status-change', { userId: user._id, status: 'Online' });
-      window.location.replace("/chat");
+      navigate("/settings");
     }
     setModalOpen(false);
   };
 
+
+  const handleReject= async ()=>{
+    let userID = user?._id
+    let operatorId=userId;
+    socketId.emit("rejectConversation", {
+      operatorId,
+      conversationId,
+      userId:userID,
+    });
+  setModalOpen(false);
+  }
   // useEffect(() => {
   //   if (user) {
   //     const userId = user?._id;
@@ -112,9 +136,11 @@ if(websiteParam){
       <NotificationModal
         open={modalOpen}
         handleClose={handleClose}
+        handleReject={handleReject}
         conversationId={conversationId}
         userId={userId}
         message={message}
+        
       />
       {element}
     </ThemeProvider>

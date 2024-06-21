@@ -26,7 +26,6 @@ export default async function sendActivationEmail(email, activationLink) {
       username:"dear",
       activationLink,
     }); 
-console.log(renderedEmail);
     await transporter.sendMail({
       from: process.env.SMTP_EMAIL, 
       to: email,

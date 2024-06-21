@@ -28,7 +28,7 @@ const PrivateRoute = ({ children }) => {
     return "loading...";
   }
 
-  console.log(isAuthenticatedd,loading)
+  // console.log(isAuthenticatedd,loading)
   if (!isAuthenticatedd) {
     return <Navigate to="/login" replace />;
   }

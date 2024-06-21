@@ -178,6 +178,7 @@ const Page = () => {
                                 <MenuItem value="Online">Active</MenuItem>
                                 <MenuItem value="Offline">Inactive</MenuItem>
                                 <MenuItem value="Break">Break</MenuItem>
+                                <MenuItem value="Busy">Busy</MenuItem>
                               </Select>
                               {formik.touched.status && formik.errors.status && (
                                 <FormHelperText>{formik.errors.status}</FormHelperText>
@@ -252,7 +253,7 @@ const Page = () => {
                       {user ? (
                         <Stack spacing={3}>
                           <Typography variant="body1">
-                            <strong>Balance:</strong> ${user?.userData?.wallet || 0}
+                            <strong>Balance:</strong> ${user?.userData?.wallet.toFixed(2) || 0}
                           </Typography>
                           {/* <Button
                             variant="outlined"

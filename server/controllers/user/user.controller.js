@@ -9,32 +9,40 @@ import sendToken from "../../utils/jwtToken.mjs";
 import sendActivationEmail from "../../utils/sendMail.mjs";
 
 const registerUser = catchAsyncError(async (req, res, next) => {
+  console.log("registerUser--------------------------------",req.body);
   try {
     const { email } = req.body;
     let existingUser = await User.findOne({ email: email });
 
     if (existingUser) {
-      const filename = req.file.filename;
-      const filePath = `utils/uploads/${filename}`;
+      const filename = req?.file?.filename;
+      if(filename){
+ const filePath = `utils/uploads/${filename}`;
       fs.unlink(filePath, (err) => {
         if (err) {
           console.log(err);
           return next(new ErrorHandler("Error deleting file!", 400));
         }
       });
+      }     
       return next(new ErrorHandler("Email already exists", 400));
     }
     let userObj;
-    if(req.file?.filename){
+    if(req.file){
+      console.log("sdf")
     const filename = req.file.filename;
     const fileUrl = path.join(filename);
-     userObj = { ...req.body, image: fileUrl };}
-     userObj = { ...req.body };
+     userObj = { ...req.body, image: fileUrl };
+    }else{
+       userObj = { ...req.body };
+    }
+    
     userObj.role = userObj.role.toLowerCase();
+    console.log("userObj--",userObj);
     if (userObj.role === "operator") {
       const createUser = await User.create({
         ...userObj,
-        OoperatorData: userObj,
+        operatorData:userObj,
         isVerified: true,
       });
       await createUser.save();
@@ -59,6 +67,7 @@ const registerUser = catchAsyncError(async (req, res, next) => {
       next(new ErrorHandler("Email not sent. Please try again!", 400));
     }
   } catch (err) {
+    console.log(err,"errorsfsdsd");
     next(err);
   }
 });
@@ -133,6 +142,21 @@ const getUser = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler(error.message, 500));
   }
 });
+
+const getAllUsers = catchAsyncError(async (req, res, next) => {
+  try {
+    const users = await User.find({role:'user'});
+    if (!users) {
+      return next(new ErrorHandler("User doesn't exists", 400));
+    }
+    res.status(200).json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 500));
+  }
+});
 const getSingleUser = catchAsyncError(async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
@@ -165,6 +189,7 @@ const logout = catchAsyncError(async (req, res, next) => {
 });
 
 const updateUserInfo = catchAsyncError(async (req, res, next) => {
+  console.log("--- req.body--", req.body);
   const { name, password, loggedIn } = req.body;
 
   try {
@@ -244,14 +269,59 @@ const updateUserWallet = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler(err.message, 500));
   }
 });
+const userWallet = catchAsyncError(async (req, res, next) => {
+console.log("req.body");
+  const userId = req.params.id
+  const userData = {
+    wallet : Number(req.body.userData.wallet)
+  }
+  const updateData = {
+    name:req.body.name,
+    email:req.body.email,
+    role:req.body.role,
+    image:req.body.image,
+    loggedIn: req.body.loggedIn,
+    userData:userData
+  }
+  try {
+
+    const user= await User.findByIdAndUpdate({ _id: userId },updateData,{new:true});
+
+    return res
+    .status(200)
+    .json({ message: "Incomplete user or operator data", data: user });
+
+  } catch (err) {
+    return next(new ErrorHandler(err.message, 500));
+  }
+});
+
+const deleteUser = catchAsyncError(async (req, res, next) => {
+  console.log("req.body", req.params.id);
+    const userId = req.params.id
+    try {
+  
+      const user= await User.findByIdAndDelete(userId);
+      console.log("user---",user);
+      return res
+      .status(200)
+      .json({ message: "Incomplete user or operator data", data: user });
+  
+    } catch (err) {
+      return next(new ErrorHandler(err.message, 500));
+    }
+  });
 
 export {
   getSingleUser,
   getUser,
+  getAllUsers,
   loginUser,
   logout,
   registerUser,
   updateUserInfo,
   verifyEmail,
   updateUserWallet,
+  userWallet,
+  deleteUser
 };

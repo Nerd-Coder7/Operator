@@ -23,6 +23,7 @@ const now = new Date();
 
 const Page = () => {
 const [transaction,setTransation]=useState([])
+const [completedTransaction,setCompletedTransaction]=useState(0)
 const [operator,setOperator]=useState([])
 const [conversation,setConversation]=useState([])
 useEffect(()=>{
@@ -33,6 +34,9 @@ useEffect(()=>{
       setConversation(allStats?.data.conversations)
       const data = await api.get('/payment/transactions');
       setTransation(data?.data?.data)
+    const gotResult=  data?.data?.data.filter((el)=>el.status==="completed");
+    const totalAmount = gotResult.reduce((sum, el) => sum + el.amount, 0);
+      setCompletedTransaction(totalAmount);
     }catch(err){
       console.log(err,"ERROR")
     }
@@ -107,8 +111,9 @@ useEffect(()=>{
                       </SvgIcon>
                     </Avatar>
                   }
-                  label='Conversations'
-                  value={conversation.length}
+                  label='Transactions'
+             
+                  value={transaction.length}
                 />
               </Grid>
               <Grid
@@ -130,8 +135,8 @@ useEffect(()=>{
                       </SvgIcon>
                     </Avatar>
                   }
-                  label='Transactions'
-                  value={transaction.length}
+                  label='Revenue'
+                  value={completedTransaction}
                 />
               </Grid>
            

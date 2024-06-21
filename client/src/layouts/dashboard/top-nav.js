@@ -36,11 +36,10 @@ export const TopNav = ({toggleDrawer,isMobile}) => {
         <Stack alignItems="center" direction="row" spacing={2}>
           {isMobile && <IconButton sx={{padding: '0'}} onClick={toggleDrawer}>
           <MenuIcon />
-        </IconButton> }
+        </IconButton> 
+        }
         
           <Box
-            component={RouterLink}
-            to="/"
             sx={{
               display: "inline-flex",
               height: 24,
@@ -54,7 +53,7 @@ export const TopNav = ({toggleDrawer,isMobile}) => {
         <Stack alignItems="center" direction="row" spacing={2}>
           {user?.role === "user" && (
             <Typography variant="h5" component="h3" mr={3}>
-              Wallet : ${user?.userData?.wallet || 0}
+              Wallet : ${user?.userData?.wallet?.toFixed(2) || 0}
             </Typography>
           )}
           <Box sx={{ position: 'relative', display: 'inline-flex' }}>

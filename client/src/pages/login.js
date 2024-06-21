@@ -9,7 +9,7 @@ import {
   Paper,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
@@ -47,10 +47,11 @@ const Page = () => {
       });
 
       sessionStorage.setItem("authToken", true);
+      console.log('data',data)
       navigate(data.redirect);
       dispatch(loadUser());
     } catch (err) {
-      setErrors({ submit: "Login failed. Please check your credentials and try again." });
+      setErrors({ submit: err.response.data.message || "Login failed. Please check your credentials and try again." });
     } finally {
       setLoading(false);
       setSubmitting(false);
@@ -153,6 +154,8 @@ const Page = () => {
                     >
                       {loading ? <CircularProgress size={24} /> : "Login"}
                     </Button>
+                    <Box marginTop={1} textAlign={'end'}>
+                    <Link  to="/register">I don't have an account</Link></Box>
                   </Box>
                 </Form>
               )}

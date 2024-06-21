@@ -19,6 +19,7 @@ import ProfilePage from "./pages/profile";
 import SuccessPage from "./pages/success";
 import FailedPage from "./pages/failed";
 import PrivateRoute from "./utils/PrivateRoute";
+import Users from "./pages/Users";
 
 export const routes = [
   {
@@ -52,6 +53,7 @@ export const routes = [
       },
       { path: "operators-create", element: <CreateOperatorPage /> },
       { path: "operators", element: <OperatorsPage /> },
+      { path: "users", element: <Users /> },
       { path: "all-operators", element: <PublicOperatorsPage /> },
       { path: "chat", element: <InboxPage /> },
       { path: "conversations", element: <ChatsPage /> },

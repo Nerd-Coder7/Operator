@@ -68,6 +68,18 @@ export const items = [
     ),
     label: 'Operators'
   },
+
+  {
+    href: '/users',
+    role:"admin",
+    icon: (
+      <SvgIcon>
+        <StarIcon />
+      </SvgIcon>
+    ),
+    label: 'Users'
+  },
+
   {
     href: '/settings',
     role:"all",

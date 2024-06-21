@@ -65,17 +65,10 @@ const statusMap = {
   },
 };
 
-export const OrdersTable = (props) => {
-  const {
-    count = 0,
-    items = [],
-    onPageChange = () => {},
-    page = 0,
-    rowsPerPage = 0,
-    onRowsPerPageChange,
-  } = props;
+export const UserTable = ({ user, setUpdate })  => {
+  
 
-  const dispatch = useDispatch();
+
   const [editableOrderId, setEditableOrderId] = useState(null);
   const [editedOrder, setEditedOrder] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
@@ -85,68 +78,47 @@ export const OrdersTable = (props) => {
 
  
 
+console.log(user,"----------")
 
-  const handleEditClick = (order) => {
+const handleEditClick = (order) => {
     setEditableOrderId(order._id);
-    // setEditedOrder(order);
-setEditedOrder({
-      ...order,
-      operatorData: {
-        ...order.operatorData,
-        website: Array.isArray(order?.operatorData?.website)
-          ? order.operatorData.website
-          : [], 
-      },
-    });
-    setAnchorEl(null);
-
-  };
+    setEditedOrder(order);
+setAnchorEl(null);
+ };
 
   const handleDeleteClick = (orderId) => {
     setSelectedOrderId(orderId);
-    setOpen(true);
-  };
-
-  const handleFinalDelete = async () => {
-    // Call your delete function here
-    try {
-      await api.delete(`/user/admin/delete-operator/${selectedOrderId}`);
-      setEditableOrderId(null);
-      dispatch(loadOperators());
-      setAnchorEl(null);
-    } catch (error) {
-      console.error("Failed to save order", error);
-    }
-    console.log("Deleting order with id:", selectedOrderId);
-    setOpen(false);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+    setOpen(true);    
   };
 
   const handleSaveClick = async () => {
     try {
-      await api.put(`/user/admin/update-operator/${editableOrderId}`, editedOrder);
+      await api.put(`/user/user-wallet/${editableOrderId}`, editedOrder);
       setEditableOrderId(null);
-      dispatch(loadOperators());
-      // Optionally, refresh data here or update the state with new data
+      setUpdate();
+
     } catch (error) {
       console.error("Failed to save order", error);
     }
   };
 
+
+
+
+
+  console.log(editedOrder,"ediye")
+
   const handleChange = (e) => {
     const { name, value } = e.target;
   setEditedOrder((prev) => {
-    if (name === "pricingPerMinute" || name === "website") {
+    if (name === "wallet") {
       return {
         ...prev,
-        [name]:value,
-        operatorData: {
-          ...prev.operatorData,
+        // [name]:value,
+        userData: {
+         ...prev.userData,
           [name]: value,
-        },
+      },
       };
     }
     return {
@@ -155,22 +127,6 @@ setEditedOrder({
     };
   });
   };
-
-
-  
-  const handleWebsiteChange = (event) => {
-    const { value } = event.target;
-    setEditedOrder((prev) => ({
-      ...prev,
-      operatorData: {
-        ...prev.operatorData,
-        website: typeof value === 'string' ? value.split(',') : value,
-      },
-    }));
-  };
-// console.log(editedOrder)
-
-
   const handleMenuClick = (event, order) => {
     setAnchorEl(event.currentTarget);
     setSelectedOrder(order);
@@ -180,8 +136,26 @@ setEditedOrder({
     setAnchorEl(null);
   };
 
-console.log(items,"items")
+  const handleClose = () => {
+    setOpen(false);
+  };
   
+
+  const handleFinalDelete = async () => {
+   
+    try {
+      await api.delete(`/user/delete-user/${selectedOrderId}`);
+      setEditableOrderId(null);
+      setUpdate();
+      setAnchorEl(null);
+    } catch (error) {
+      console.error("Failed to save order", error);
+    }
+    console.log("Deleting order with id:", selectedOrderId);
+    setOpen(false);
+  };
+
+
   return (
     <div>
       <Scrollbar>
@@ -189,26 +163,26 @@ console.log(items,"items")
           <TableHead>
             <TableRow>
               <TableCell>Image</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Operator</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Webiste</TableCell>
-              <TableCell>Price/minute</TableCell>
-              <TableCell>Total</TableCell>
-              <TableCell>Short description</TableCell>
+              <TableCell>Date</TableCell> 
+              <TableCell>Name</TableCell>
+              {/* <TableCell>Status</TableCell> */}
+              <TableCell>wallet</TableCell>
+              
               <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>
-            {items.map((order,i) => {
+            {user && user.map((order, i)=> {
               const isEditable = order._id === editableOrderId;
-              const status = statusMap[order.loggedIn];
+            const status = statusMap[order.loggedIn];
 
               const createdDate = format(parseISO(order.createdAt), "dd-MM-yyyy");
               const createdTime = format(parseISO(order.createdAt), "hh:mm a");
 
               return (
                 <TableRow key={i}>
+
+    
                   <TableCell>
                     <Link color="inherit" href="#" underline="none" variant="subtitle2">
                       <Avatar
@@ -226,18 +200,20 @@ console.log(items,"items")
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    {isEditable && order ? (
-                      <TextField name="name" value={editedOrder.name} onChange={handleChange} />
-                    ) : (
+                    {isEditable && order ? ( 
+
+                    <TextField name="name" value={editedOrder.name}
+                       onChange={handleChange} />
+                  ) : (
                       <Typography color="inherit" variant="inherit">
                         {order.name}
                       </Typography>
-                    )}
+                  )}
                     <Typography color="text.secondary" variant="inherit">
                       {order.email}
                     </Typography>
                   </TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     {isEditable && order ? (
                       <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                         <InputLabel id="demo-select-small-label">Status</InputLabel>
@@ -267,82 +243,23 @@ console.log(items,"items")
                         />
                         <Typography variant="body2">{status?.label}</Typography>
                       </Stack>
-                    )}
-                  </TableCell>
+                   )} 
+                  </TableCell> */}
+                
                   <TableCell>
-                    {isEditable && order ? (
-                       <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                       <InputLabel id="demo-select-small-label">Website</InputLabel>
-                       <Select
-                         labelId="demo-select-small-label"
-                         id="demo-select-small"
-                         multiple
-                         value={editedOrder?.operatorData?.website || []}
-                         label="Website"
-                         name="website"
-                         onChange={handleWebsiteChange}
-                         renderValue={(selected) => Array.isArray(selected) ? selected.join(', ') : ''}
-                       >
-                         <MenuItem value={"A_Website"}>A Website</MenuItem>
-                         <MenuItem value={"B_Website"}>B Website</MenuItem>
-                         <MenuItem value={"C_Website"}>C Website</MenuItem>
-                       </Select>
-                     </FormControl>
-                   ) : (
-                     <Stack alignItems="center" direction="row" spacing={1}>
-                      <Typography variant="body2">
-                          {Array.isArray(order?.operatorData?.website) ? order.operatorData.website.join(', ') : "NA"}
-                        </Typography>
-                     </Stack>
-                   )}
-                      {/* <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                        <InputLabel id="demo-select-small-label">Website</InputLabel>
-                        <Select
-                          labelId="demo-select-small-label"
-                          
-                          id="demo-select-small"
-                          value={editedOrder?.operatorData?.website}
-                          label="Website"
-                          name="website"
-                          onChange={handleChange}
-                        >
-                          <MenuItem value={"A_Website"}>A Website</MenuItem>
-                          <MenuItem value={"B_Website"}>B Website</MenuItem>
-                          <MenuItem value={"C_Website"}>C Website</MenuItem>
-                        </Select>
-                      </FormControl>
-                    ) : (
-                      <Stack alignItems="center" direction="row" spacing={1}>
-                      
-                        <Typography variant="body2">{order?.operatorData?.website || "NA"}</Typography>
-                      </Stack>
-                    )}  */}
-                  </TableCell>
-                  <TableCell>
-                  {isEditable && order ? (
-                      <TextField name="pricingPerMinute" value={editedOrder?.operatorData?.pricingPerMinute} onChange={handleChange} />
-                    ) : (
-                      <Typography color="inherit" variant="inherit">
-                        ${order?.operatorData?.pricingPerMinute || 0}
-                      </Typography>
-                    )}
-                    </TableCell>
-                  <TableCell>${order?.transaction}</TableCell>
+                    {isEditable && order ? ( 
 
-                     <TableCell>
-                  {isEditable && order ? (
-                      <TextField  
-                      multiline 
-                      name="shortDiscription" 
-                      value={editedOrder?.shortDiscription}
-                       onChange={handleChange} />
-                    ) : (
+                     <TextField name="wallet" value={editedOrder?.userData?.wallet}
+                       onChange={handleChange} /> 
+                   ) : (
                       <Typography color="inherit" variant="inherit">
-                        {order?.shortDiscription}
+                        ${order?.userData?.wallet.toFixed(2)}
                       </Typography>
-                    )}
-                    </TableCell>
-                  <TableCell align="right">
+                     )} 
+                 
+                  </TableCell>
+                 
+                <TableCell align="right">
                     {isEditable ? (
                       <>
                         <Button onClick={handleSaveClick}>Save</Button>
@@ -426,37 +343,24 @@ console.log(items,"items")
           <DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Are you absolutely sure you want to delete the operator? This action cannot be undone.
+              Are you absolutely sure you want to delete the User? This action cannot be undone.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="secondary">
               Cancel
             </Button>
-            <Button onClick={handleFinalDelete} color="primary" autoFocus>
+            <Button 
+            onClick={handleFinalDelete}s
+             color="primary" autoFocus>
               Confirm
             </Button>
           </DialogActions>
         </Dialog>
       </Scrollbar>
       <Divider />
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={count}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={onPageChange}
-        onRowsPerPageChange={onRowsPerPageChange}
-      />
+ 
     </div>
   );
 };
 
-OrdersTable.propTypes = {
-  items: PropTypes.array,
-  page: PropTypes.number,
-  rowsPerPage: PropTypes.number,
-  onPageChange: PropTypes.func,
-  onRowsPerPageChange: PropTypes.func,
-};

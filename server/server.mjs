@@ -9,7 +9,7 @@ const httpServer = createServer(app);
 const io = setupWebSocket(httpServer);
 
 let users = [];
-console.log(users,"All users")
+
 const addUser = (userId, socketId,type) => {
   const userIndex = users.findIndex((user) => user.userId === userId);
   if (userIndex !== -1) {
@@ -71,11 +71,36 @@ io.on("connection", (socket) => {
   
   socket.on("endConversation", ({ operatorId, conversationId, userId }) => {
     const operator = getUser(operatorId);
-    console.log(operator,operatorId)
+ 
     if (operator) {
       io.to(operator.socketId).emit("notifyEndConversation", {
         conversationId,
         userId,
+      });
+    }
+  });
+  
+  socket.on("rejectConversation", ({ operatorId, conversationId, userId }) => {
+    const operator = getUser(operatorId);
+    console.log(operator,operatorId)
+    if (operator) {
+      io.to(operator.socketId).emit("notifyRejectConversation", {
+     
+        conversationId,
+        userId,
+      });
+      
+    }
+  });
+
+  socket.on("acceptConversation", ({ operatorId, conversationId }) => {
+    console.log("bheja kya apne operator",operatorId)
+
+    const operator = getUser(operatorId);
+    if (operator) {
+      console.log("bheja kya apne operator")
+      io.to(operator.socketId).emit("notifyAcceptConversation", {
+        conversationId
       });
     }
   });
