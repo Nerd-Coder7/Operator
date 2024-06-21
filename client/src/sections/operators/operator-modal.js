@@ -20,7 +20,7 @@ const OperatorModal = ({ open, handleClose, operator, user }) => {
   const availableMinutes = Math.floor(user.userData?.wallet / (operator?.operatorData?.pricingPerMinute || 0));
   const navigate = useNavigate();
   const socketId = useSocket();
-
+const [loading,setLoading]=useState(false);
   const handleChange = (event) => {
     setTopUpAmount(event.target.value);
   };
@@ -28,17 +28,25 @@ const OperatorModal = ({ open, handleClose, operator, user }) => {
 
   console.log(availableMinutes,"hfshdfg")
   
-  const handleAddMoney = async () => {
-    const userId = user._id;
+  const handleAddMoney = async () => { 
+
+    try{   
+       setLoading(true)
+const userId = user._id;
     const operatorId = operator._id;
     const amount = topUpAmount;
     let res = await api.post('/payment', { userId, operatorId, amount });
-
+    setLoading(false)
     console.log(res);
     if (res && res.data) {
       let link = res.data.links[1].href;
       window.location.href = link;
     }
+    }catch(err){
+    setLoading(false)
+    }
+   
+    
   };
 
   const handleCreateChat = async () => {
@@ -69,7 +77,11 @@ const OperatorModal = ({ open, handleClose, operator, user }) => {
   };
  
   const topUpMinutes = Math.floor(topUpAmount / (operator?.operatorData?.pricingPerMinute || 1));
-console.log(topUpMinutes,topUpAmount,operator?.operatorData?.pricingPerMinute)
+
+if(loading){
+return "Loading Please wait...";
+}
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>{operator.name}</DialogTitle>
