@@ -162,11 +162,11 @@ setAnchorEl(null);
         <Table sx={{ minWidth: 800 }}>
           <TableHead>
             <TableRow>
-              <TableCell>Image</TableCell>
-              <TableCell>Date</TableCell> 
-              <TableCell>Name</TableCell>
+              <TableCell>IMMAGINE</TableCell>
+              <TableCell>DATA</TableCell> 
+              <TableCell>NOME</TableCell>
               {/* <TableCell>Status</TableCell> */}
-              <TableCell>wallet</TableCell>
+              <TableCell>PORTAFOGLIO</TableCell>
               
               <TableCell />
             </TableRow>
@@ -249,11 +249,11 @@ setAnchorEl(null);
                   <TableCell>
                     {isEditable && order ? ( 
 
-                     <TextField name="wallet" value={editedOrder?.userData?.wallet}
+                     <TextField name="wallet" value={editedOrder?.userData?.wallet.toFixed(2)}
                        onChange={handleChange} /> 
                    ) : (
                       <Typography color="inherit" variant="inherit">
-                        ${order?.userData?.wallet.toFixed(2)}
+                        €{order?.userData?.wallet.toFixed(2)}
                       </Typography>
                      )} 
                  

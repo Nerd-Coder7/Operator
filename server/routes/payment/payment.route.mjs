@@ -28,13 +28,13 @@ paymentRouter.post("/", async (req, res, next) => {
                 name: "Minutes",
                 sku: "item",
                 price: amount.toFixed(2),
-                currency: "USD",
+                currency: "EUR",
                 quantity: 1,
               },
             ],
           },
           amount: {
-            currency: "USD",
+            currency: "EUR",
             total: amount.toFixed(2),
           },
           description:
@@ -91,7 +91,7 @@ paymentRouter.get("/success", async (req, res, next) => {
       transactions: [
         {
           amount: {
-            currency: "USD",
+            currency: "EUR",
             total: transaction.amount.toFixed(2),
           },
           description: "This is the payment description.",
@@ -156,7 +156,7 @@ paymentRouter.get("/failed", async (req, res) => {
 
 paymentRouter.get("/transactions", async (req, res) => {
   try {
-    const allTransactions = await Transactions.find().populate("sender");
+    const allTransactions = await Transactions.find().sort({createdAt:-1}).populate("sender");
     return res.status(200).send({ success: true, data: allTransactions });
   } catch (err) {
     return next(new ErrorHandler(err.message), 500);

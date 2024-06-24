@@ -43,7 +43,7 @@ import { UserTable } from "src/sections/user/user-table";
                   justifyContent="space-between"
                   spacing={3}
                 >
-                <Typography variant="h4">Users</Typography>
+                <Typography variant="h4">Utenti</Typography>
                  
                 </Stack>
                 <div>

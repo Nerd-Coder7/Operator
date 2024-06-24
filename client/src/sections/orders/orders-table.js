@@ -188,14 +188,16 @@ console.log(items,"items")
         <Table sx={{ minWidth: 800 }}>
           <TableHead>
             <TableRow>
-              <TableCell>Image</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Operator</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Webiste</TableCell>
-              <TableCell>Price/minute</TableCell>
-              <TableCell>Total</TableCell>
-              <TableCell>Short description</TableCell>
+              <TableCell>IMMAGINE</TableCell>
+              <TableCell>DATA</TableCell>
+              <TableCell>Operatore</TableCell>
+              <TableCell>Stato</TableCell>
+              <TableCell>Sito web</TableCell>
+              <TableCell>Prezzo/minuto</TableCell>
+              <TableCell>Guadagnare
+
+              </TableCell>
+              <TableCell>Breve descrizione</TableCell>
               <TableCell />
             </TableRow>
           </TableHead>
@@ -323,11 +325,20 @@ console.log(items,"items")
                       <TextField name="pricingPerMinute" value={editedOrder?.operatorData?.pricingPerMinute} onChange={handleChange} />
                     ) : (
                       <Typography color="inherit" variant="inherit">
-                        ${order?.operatorData?.pricingPerMinute || 0}
+                        €{order?.operatorData?.pricingPerMinute || 0}
                       </Typography>
                     )}
                     </TableCell>
-                  <TableCell>${order?.transaction}</TableCell>
+                  <TableCell style={{display:"flex",flexDirection:"column"}}>
+                  <Typography color="inherit" variant="inherit">     Settimanalmente: €{order?.weeklyTransaction} </Typography>
+                  <Typography color="inherit" variant="inherit">  Mensile: €{order?.monthlyTransaction} </Typography>
+                  <Typography color="inherit" variant="inherit">    Annuale:  €{order?.yearlyTransaction} </Typography>
+                  <Typography color="inherit" variant="inherit">          Totale: €{order?.transaction} </Typography>
+               
+              
+            
+       
+                 </TableCell>
 
                      <TableCell>
                   {isEditable && order ? (

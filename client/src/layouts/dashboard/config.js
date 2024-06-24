@@ -66,7 +66,7 @@ export const items = [
         <StarIcon />
       </SvgIcon>
     ),
-    label: 'Operators'
+    label: 'Operatori'
   },
 
   {
@@ -77,7 +77,7 @@ export const items = [
         <StarIcon />
       </SvgIcon>
     ),
-    label: 'Users'
+    label: 'Utenti'
   },
 
   {

@@ -40,7 +40,7 @@ export const Footer = () => (
         color="text.secondary"
         variant="caption"
       >
-        © 2023 Devias
+        © 2024 Arturo
       </Typography>
       <Box sx={{ flexGrow: 1 }} />
       {items.map((link) => (

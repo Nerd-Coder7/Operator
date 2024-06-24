@@ -79,7 +79,7 @@ const Page = () => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField
-            label="Name"
+            label="NOME"
             name="name"
             value={formData.name}
             onChange={handleChange}
@@ -99,7 +99,7 @@ const Page = () => {
         </Grid>
         <Grid item xs={12}>
           <TextField
-            label="Wallet Balance"
+            label="PORTAFOGLIO Balance"
             value={`${user.wallet.balance} minutes`}
             fullWidth
             disabled

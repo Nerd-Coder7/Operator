@@ -28,7 +28,7 @@ const Page = () => {
     <>
     <Helmet>
     <title>
-      Orders 
+    Ordini 
     </title>
   </Helmet>
   <Box
@@ -45,12 +45,12 @@ const Page = () => {
           spacing={3}
         >
           <Typography variant="h4">
-            Transactions:-
+          Transazioni:-
           </Typography>
          
         </Stack>
     <Container component={Paper} sx={{ p: 3, mt: 5 }}>
-      <Typography variant="h5" sx={{ mb: 2 }}>Transaction History</Typography>
+      <Typography variant="h5" sx={{ mb: 2 }}>Cronologia delle transazioni</Typography>
       <List>
         {transactions.map((transaction, index) => (
           <React.Fragment key={index}>

@@ -66,7 +66,7 @@ const NotificationModal = ({ open, handleClose, handleReject, conversationId, us
             }}
             sx={{ mt: 2 }}
           >
-            Chiudi
+            Chiudi gg
           </Button>
         )}
       </Box>

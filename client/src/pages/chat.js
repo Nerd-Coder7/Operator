@@ -21,7 +21,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Modal from "@mui/material/Modal";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";  
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -89,10 +89,14 @@ const Page = () => {
   const [startConversation,setStartConversation]=useState(false)
 
 
+
+
+
   const handleEndChat = () => {
     let userId = user?._id;
     dispatch(loadUser());
     sessionStorage.removeItem("timeStart");
+    sessionStorage.removeItem("StartedChat");
     let operatorId = userData._id;
     socketId.emit("endConversation", {
       operatorId,
@@ -102,7 +106,12 @@ const Page = () => {
     navigate("/all-operators");
   };
 
+
   useEffect(() => {
+    let gotStart = sessionStorage.getItem("StartedChat");
+    if(gotStart){
+      setStartConversation(gotStart);
+    }
     if (user && socket && user.loggedIn === "Online") {
       socket.on("notifyRejectConversation", ({ conversationId, userId }) => {
         setMessage("Conversation Request rejected");
@@ -115,6 +124,7 @@ const Page = () => {
       socket.on("notifyAcceptConversation", () => {
         setMessage("Conversation Request accepted");
         setStartConversation(true);
+        sessionStorage.setItem("StartedChat",true)
       });
 
       return () => {
@@ -127,7 +137,9 @@ const Page = () => {
 
   const handleClose = async () => {
     sessionStorage.removeItem("timeStart");
+    sessionStorage.removeItem("StartedChat");
     setModalOpen(false);
+    navigate("/all-operators")
   };
 
   useEffect(() => {
@@ -452,19 +464,19 @@ const Page = () => {
                 <ListItemText primary={"Inbox"} />
               </ListItem>
             </List>
-            <Divider />
-            {user?.role === "admin" && (
+            {/* <Divider /> */}
+            {user?.role === "admin" &&   <> 
               <Grid item xs={12} style={{ padding: "10px" }}>
                 <TextField
                   id="outlined-basic-email"
-                  label="Search Operators"
+                  label="Search OPERATORI"
                   variant="outlined"
                   fullWidth
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </Grid>
-            )}
+         
             <Grid item xs={12}>
               <List>
                 {searchTerm && filteredOperators.map((operator) => (
@@ -481,12 +493,15 @@ const Page = () => {
                 ))}
               </List>
             </Grid>
-            <Divider />
-            {searchTerm && <> <Divider />
-            <Divider />
+         
+                </>}
+            {/* <Divider /> */}
+            {searchTerm && <>
+             {/* <Divider /> */}
+            {/* <Divider /> */}
            <p style={{textAlign:"center"}}>Conversation List</p> </> }
 
-            <List>
+            <List style={{height:"calc(100%-64px)",overflowY:"auto"}} >
               {conversations &&
                 socketId &&
                 conversations.map((item, index) => (
@@ -522,7 +537,8 @@ const Page = () => {
               </Grid>
             )}
             <Divider />
-            <List>
+            
+            <List style={{height:"calc(100%-64px)",overflowY:"auto"}}>
               {conversations &&
                 socketId &&
                 conversations.map((item, index) => (

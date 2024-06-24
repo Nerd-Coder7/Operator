@@ -113,12 +113,12 @@ const Page = () => {
   return (
     <>
       <Helmet>
-        <title>Settings</title>
+        <title>Impostazioni</title>
       </Helmet>
       <Box sx={{ flexGrow: 1, py: 8 }}>
         <Container maxWidth="lg">
           <Stack spacing={3}>
-            <Typography variant="h4">Settings</Typography>
+            <Typography variant="h4">Impostazioni</Typography>
             <Grid container spacing={3}>
               <Grid item xs={12} md={4}>
                 <Typography variant="h6">Account</Typography>
@@ -158,7 +158,7 @@ const Page = () => {
                                   variant="outlined"
                                   component="span"
                                 >
-                                  Change
+                                  Modifica
                                 </Button>
                               </label>
                             </div>
@@ -167,9 +167,9 @@ const Page = () => {
                             <FormControl
                               error={Boolean(formik.touched.status && formik.errors.status)}
                             >
-                              <InputLabel>Status</InputLabel>
+                              <InputLabel>Stato</InputLabel>
                               <Select
-                                label="Status"
+                                label="Stato"
                                 name="status"
                                 value={formik.values.status}
                                 onBlur={formik.handleBlur}
@@ -190,7 +190,7 @@ const Page = () => {
                           error={Boolean(formik.touched.name && formik.errors.name)}
                           fullWidth
                           helperText={formik.touched.name && formik.errors.name}
-                          label="Name"
+                          label="NOME"
                           name="name"
                           onBlur={formik.handleBlur}
                           onChange={formik.handleChange}
@@ -200,7 +200,7 @@ const Page = () => {
                           error={Boolean(formik.touched.email && formik.errors.email)}
                           fullWidth
                           helperText={formik.touched.email && formik.errors.email}
-                          label="Email address"
+                          label="Indirizzo e-mail"
                           name="email"
                           onBlur={formik.handleBlur}
                           onChange={formik.handleChange}
@@ -212,7 +212,7 @@ const Page = () => {
                           error={Boolean(formik.touched.role && formik.errors.role)}
                           fullWidth
                           helperText={formik.touched.role && formik.errors.role}
-                          label="Role"
+                          label="Ruolo"
                           name="role"
                           disabled
                           onBlur={formik.handleBlur}
@@ -223,7 +223,7 @@ const Page = () => {
                           error={Boolean(formik.touched.password && formik.errors.password)}
                           fullWidth
                           helperText={formik.touched.password && formik.errors.password}
-                          label="Password"
+                          label="Parola d'ordine"
                           name="password"
                           onBlur={formik.handleBlur}
                           onChange={formik.handleChange}
@@ -233,12 +233,12 @@ const Page = () => {
                           <FormHelperText error>{formik.errors.submit}</FormHelperText>
                         )}
                         <Button color="primary" size="large" type="submit" variant="outlined">
-                          Save settings
+                        Salva le impostazioni
                         </Button>
                       </Stack>
                     </form>
                   ) : (
-                    <Typography variant="body1">Loading user data...</Typography>
+                    <Typography variant="body1">Caricamento dati utente...</Typography>
                   )}
                 </Card>
               </Grid>
@@ -246,14 +246,14 @@ const Page = () => {
                 <>
                   {" "}
                   <Grid item xs={12} md={4}>
-                    <Typography variant="h6">Wallet Details</Typography>
+                    <Typography variant="h6">PORTAFOGLIO Details</Typography>
                   </Grid>
                   <Grid item xs={12} md={8}>
                     <Card sx={{ p: 3 }}>
                       {user ? (
                         <Stack spacing={3}>
                           <Typography variant="body1">
-                            <strong>Balance:</strong> ${user?.userData?.wallet.toFixed(2) || 0}
+                            <strong>Bilancia:</strong> €{user?.userData?.wallet.toFixed(2) || 0}
                           </Typography>
                           {/* <Button
                             variant="outlined"
@@ -266,7 +266,7 @@ const Page = () => {
                           </Button> */}
                         </Stack>
                       ) : (
-                        <Typography variant="body1">Loading wallet details...</Typography>
+                        <Typography variant="body1">Caricamento dei dettagli del portafoglio...</Typography>
                       )}
                     </Card>
                   </Grid>

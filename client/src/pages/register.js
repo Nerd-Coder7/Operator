@@ -26,7 +26,7 @@ import { Link } from "react-router-dom";
   const validationSchema = Yup.object({
     password: Yup.string().max(255).required("Password is required"),
     email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
-    name: Yup.string().max(255).required("Name is required"),
+    name: Yup.string().max(255).required("NOME is required"),
   });
   
   const Page = () => {
@@ -153,7 +153,7 @@ import { Link } from "react-router-dom";
                           error={Boolean(formik.touched.name && formik.errors.name)}
                           fullWidth
                           helperText={formik.touched.name && formik.errors.name}
-                          label="Full Name"
+                          label="Full NOME"
                           name="name"
                           onBlur={formik.handleBlur}
                           onChange={formik.handleChange}

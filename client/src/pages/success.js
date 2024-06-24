@@ -66,10 +66,10 @@ const Page = () => {
           <>
             <CheckCircleOutlineIcon color="success" style={{ fontSize: 80 }} />
             <Typography variant="h4" component="h1" gutterBottom>
-              Payment Successful!
+            Pagamento riuscito!
             </Typography>
             <Typography variant="body1" color="textSecondary" paragraph>
-              Your payment has been processed successfully.
+            Il tuo pagamento è stato elaborato con successo.
             </Typography>
             <Button variant="contained" color="primary" onClick={handleOk}>
               OK
@@ -78,13 +78,13 @@ const Page = () => {
         ) : (
           <>
             <Typography variant="h4" component="h1" gutterBottom>
-              Payment Failed
+            Pagamento fallito
             </Typography>
             <Typography variant="body1" color="textSecondary" paragraph>
-              Unfortunately, your payment could not be processed. Please try again.
+            Purtroppo non è stato possibile elaborare il pagamento. Per favore riprova.
             </Typography>
             <Button variant="contained" color="primary" onClick={handleOk}>
-              Go Home
+            Andare a casa
             </Button>
           </>
         )}

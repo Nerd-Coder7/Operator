@@ -88,6 +88,8 @@ if(websiteParam){
   }, [user, socket, dispatch]);
 
   const handleClose = async() => {
+    try{
+
     if (conversationId) {
       socketId.emit("acceptConversation", {
         operatorId:userId,
@@ -102,6 +104,9 @@ if(websiteParam){
       navigate("/settings");
     }
     setModalOpen(false);
+  }catch(err){
+    alert(err.response.data.message)
+  }
   };
 
 

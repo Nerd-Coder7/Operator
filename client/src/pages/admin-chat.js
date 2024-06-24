@@ -13,6 +13,7 @@ import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "src/api";
+import "./chat.css"
 import { loadUser } from "src/redux/actions/user";
 import { MessageList } from "src/sections/admin/MessageLists";
 import { useSocket } from "src/utils/SocketContext";
@@ -147,7 +148,7 @@ src={`${process.env.REACT_APP_API_URI}/${user?.image}`} />
             </List>
             <Divider />
       
-            <List>
+            <List style={{height:"82vh",overflowY:"auto"}}>
               {conversations &&
                 socketId &&
                 conversations.map((item, index) => (

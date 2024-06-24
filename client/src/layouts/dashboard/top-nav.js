@@ -53,7 +53,7 @@ export const TopNav = ({toggleDrawer,isMobile}) => {
         <Stack alignItems="center" direction="row" spacing={2}>
           {user?.role === "user" && (
             <Typography variant="h5" component="h3" mr={3}>
-              Wallet : ${user?.userData?.wallet?.toFixed(2) || 0}
+              Portafoglio : €{user?.userData?.wallet?.toFixed(2) || 0}
             </Typography>
           )}
           <Box sx={{ position: 'relative', display: 'inline-flex' }}>

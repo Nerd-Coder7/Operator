@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { format, isSameWeek, isSameMonth, isSameYear } from "date-fns";
 import api from "src/api";
 import { loadOperators } from "src/redux/actions/admin";
 import { OrdersSearch } from "src/sections/orders/orders-search";
@@ -15,40 +16,56 @@ const Page = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const state = useSelector((state) => state.admin);
   const [orders, setOrders] = useState(state.operators);
-  const [transactions, setTransations] = useState([]);
+  const [transactions, setTransactions] = useState([]);
 
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(loadOperators());
     const fetchData = async () => {
       try {
         const data = await api.get("/payment/transactions");
-        setTransations(data?.data?.data);
+        setTransactions(data?.data?.data);
       } catch (err) {
         console.log(err, "ERROR");
       }
     };
     fetchData();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     const operatorTransactionMap = state.operators.reduce((acc, operator) => {
-      acc[operator._id] = { ...operator, transaction: 0 };
+      acc[operator._id] = {
+        ...operator,
+        transaction: 0,
+        weeklyTransaction: 0,
+        monthlyTransaction: 0,
+        yearlyTransaction: 0
+      };
       return acc;
     }, {});
-    // Iterate over transactions and sum the wallet balances for matching recipientIds
+
     transactions.forEach(transaction => {
       if (operatorTransactionMap[transaction.recepient] && transaction.status === "completed") {
+        const transactionDate = new Date(transaction.createdAt);
         operatorTransactionMap[transaction.recepient].transaction += transaction.amount;
+
+        if (isSameWeek(transactionDate, new Date())) {
+          operatorTransactionMap[transaction.recepient].weeklyTransaction += transaction.amount;
+        }
+        if (isSameMonth(transactionDate, new Date())) {
+          operatorTransactionMap[transaction.recepient].monthlyTransaction += transaction.amount;
+        }
+        if (isSameYear(transactionDate, new Date())) {
+          operatorTransactionMap[transaction.recepient].yearlyTransaction += transaction.amount;
+        }
       }
     });
 
-    // Convert the map back to an array
     const updatedOperators = Object.values(operatorTransactionMap);
 
-
     setOrders(updatedOperators.slice(page * rowsPerPage, (page + 1) * rowsPerPage));
-  }, [state.operators, page, rowsPerPage,transactions]);
+  }, [state.operators, page, rowsPerPage, transactions]);
 
   const handleModeChange = useCallback((event, value) => {
     if (value) {
@@ -80,12 +97,7 @@ const Page = () => {
       <Helmet>
         <title>Operators</title>
       </Helmet>
-      <Box
-        sx={{
-          flexGrow: 1,
-          py: 8,
-        }}
-      >
+      <Box sx={{ flexGrow: 1, py: 8 }}>
         <Container maxWidth="xl">
           <Stack spacing={3}>
             <Stack
