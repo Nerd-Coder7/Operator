@@ -18,7 +18,6 @@ app.use(morgan("dev"));
 app.use(cookieParser());
 const corsOptions = {
   origin:'https://operator-steel.vercel.app',
-//  origin: 'https://operator-steel.vercel.app', 
   credentials: true, 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
   allowedHeaders: ['Content-Type', 'Authorization'] 
