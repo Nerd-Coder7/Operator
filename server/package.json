@@ -1,12 +1,11 @@
 {
   "name": "patr",
   "version": "1.0.0",
-  "type": "module",
   "description": "",
-  "main": "index.mjs",
+  "main": "start.js",
   "scripts": {
-    "start": "nodemon server.mjs",
-    "dev": "node server.mjs"
+    "start": "nodemon start.mjs",
+    "dev": "node start.mjs"
   },
   "keywords": [],
   "author": "Aron Web Solutions",
