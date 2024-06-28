@@ -4,24 +4,26 @@ import dotenv from "dotenv";
 
 dotenv.config();
 import paypal from 'paypal-rest-sdk';
-
+import { allRouter } from "./routes/index.mjs";
+import { fileURLToPath } from 'url';
+import path from  "path";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import morgan from "morgan";
-import { ErrorMiddleWare } from "./middlewares/error.mjs";
-import { allRouter } from "./routes/index.mjs";
+import { ErrorMiddleWare } from "./middlewares/error.mjs"
 app.use(express.json({ limit: "50mb" }));
 app.use(morgan("dev"));
 app.use(cookieParser());
 const corsOptions = {
-  // origin: process.env.ORIGIN,
-  origin: 'https://operator-steel.vercel.app', 
-  // origin: 'http://localhost:3000', 
+  origin:'https://operator-steel.vercel.app',
+//  origin: 'https://operator-steel.vercel.app', 
   credentials: true, 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
   allowedHeaders: ['Content-Type', 'Authorization'] 
 };
-
+console.log(corsOptions);
 paypal.configure({
   "mode":'sandbox',
   "client_id": "AX6923l9wsuCrhtwNQxBGObDVIf6uYmljXjLwaZOeaLSvBijJJwnYllebRA9368GTzQCSM67PzKeHUq0",
@@ -36,15 +38,17 @@ paypal.configure({
 app.use("/", express.static("./utils/uploads"));
 app.use(cors(corsOptions));
 
-app.use("/api/v1", allRouter);
+app.use(express.static(path.join(__dirname, "build")));
+// Define a route for handling requests to the root URL
+app.get(/^(?!\/?api).*/, (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
-app.get("/", (req, res) => {
+app.get("/server", (req, res) => {
   res.status(200).json({ success: true, message: "Hello from server!" });
 });
 
-
-
-
+app.use("/api/v1", allRouter);
 
 app.all("*", (req, res, next) => {
   const err = new Error(`Route ${req.originalUrl} not found`);
