@@ -4,11 +4,9 @@ import SendIcon from "@mui/icons-material/Send";
 import {
   Box,
   Button,
-  CssBaseline,
   ListItemAvatar,
-  ThemeProvider,
   useMediaQuery,
-  useTheme,
+  useTheme
 } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
@@ -16,22 +14,22 @@ import Fab from "@mui/material/Fab";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Modal from "@mui/material/Modal";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
-import { useEffect, useRef, useState } from "react";  
+import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "src/api";
 import { loadUser } from "src/redux/actions/user";
 import { MessageList } from "src/sections/chat/MessageList";
-import { useSocket } from "src/utils/SocketContext";
-import "./chat.css";
 import NotificationModal from "src/sections/chat/NotificationModal";
+import { useSocket } from "src/utils/SocketContext";
 import { format } from "timeago.js";
+import "./chat.css";
+import { setMinutes } from "date-fns";
 // import socketIO from "socket.io-client";
 
 // const ENDPOINT = "http://localhost:4800";
@@ -45,9 +43,9 @@ const Page = () => {
   };
   const floatingTimerStyle = {
     position: "fixed",
-    top: "120px",
+    top: "100px",
     right: "20px",
-    backgroundColor: "#fff",
+    backgroundColor: "transparent",
     border: "1px solid #ccc",
     padding: "10px",
     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
@@ -87,12 +85,12 @@ const Page = () => {
   const socket = useSocket();
   const [modalOpen, setModalOpen] = useState(false);
   const [startConversation,setStartConversation]=useState(false)
+const [sendMinutes,setSendMinutes]=useState(0);
 
 
 
 
-
-  const handleEndChat = () => {
+  const handleEndChat = async() => {
     let userId = user?._id;
     dispatch(loadUser());
     sessionStorage.removeItem("timeStart");
@@ -103,6 +101,11 @@ const Page = () => {
       conversationId: conversation,
       userId,
     });
+    try{
+      await api.post('/session',{sender:userId,reciever:operatorId,minutes:sendMinutes})
+    }catch(e){
+     console.log(e)
+    }
     navigate("/all-operators");
   };
 
@@ -154,6 +157,13 @@ const Page = () => {
         const seconds = Math.floor((timeDifference / 1000) % 60);
         const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
         const hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24);
+
+        if(hours && minutes){
+          const mminutes = Math.floor(hours*60);
+          const existingmin = minutes;
+          const totalMin = mminutes+existingmin;
+          setSendMinutes(totalMin);
+        }
 
         setElapsedTime(`${hours}h ${minutes}m ${seconds}s`);
 
@@ -603,7 +613,7 @@ const Page = () => {
                     button
                     key="Inbox"
                   >
-                    <ListItemText primary={"Back"} />
+                   {user?.role!=="user" && <ListItemText primary={"Back"} />}
                   </ListItem>
                 </List>
               </div>

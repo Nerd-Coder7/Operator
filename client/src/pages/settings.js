@@ -46,6 +46,7 @@ const Page = () => {
   const [initialValues, setInitialValues] = useState(initialValuesTemplate);
   const dispatch = useDispatch();
   const socket = useSocket();
+const [stats,setStats]=useState({})
 
   useEffect(() => {
     if (user) {
@@ -60,6 +61,20 @@ const Page = () => {
     }
   }, [user]);
 
+useEffect(()=>{
+  const fetchF=async()=>{
+    if(user?.role==="operator"){
+try{
+await api.get('/session/'+user?._id).then((res)=>setStats(res.data))
+}catch(e){
+ return alert(e.response.data.message)
+}
+}
+
+  }
+  fetchF()
+},[user])
+console.log(stats)
   const formik = useFormik({
     initialValues,
     enableReinitialize: true,
@@ -242,6 +257,45 @@ const Page = () => {
                   )}
                 </Card>
               </Grid>
+              {user?.role === "operator" && (
+                <>
+                  {" "}
+                  <Grid item xs={12} md={4}>
+                    <Typography variant="h6">PORTAFOGLIO Details</Typography>
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <Card sx={{ p: 3 }}>
+                      {user ? (
+                        <Stack spacing={3}>
+                          <Typography variant="body1">
+                            <strong>Today:</strong> {stats.day || 0}minutes
+                          </Typography>
+                          <Typography variant="body1">
+                            <strong>Weekly:</strong> {stats.week || 0}minutes
+                          </Typography>
+                          <Typography variant="body1">
+                            <strong>Monthly:</strong> {stats.month || 0}minutes
+                          </Typography>
+                          <Typography variant="body1">
+                            <strong>Total:</strong> {stats.total || 0}minutes
+                          </Typography>
+                          {/* <Button
+                            variant="outlined"
+                            color="warning"
+                            onClick={() => {
+                              window.location.href = "/transaction-history";
+                            }}
+                          >
+                            View Transaction History
+                          </Button> */}
+                        </Stack>
+                      ) : (
+                        <Typography variant="body1">Caricamento dei dettagli del portafoglio...</Typography>
+                      )}
+                    </Card>
+                  </Grid>
+                </>
+              )}
               {user?.role === "user" && (
                 <>
                   {" "}

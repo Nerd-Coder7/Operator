@@ -44,7 +44,7 @@ if(websiteParam){
 },[location?.search])
 
   useEffect(() => {
-    if (user && socket && user.loggedIn === "Online") {
+    if (user && socket && user?.loggedIn === "Online" || user?.loggedIn === "Busy") {
       console.log("New notification available");
 
       socket.on("notifyNewConversation", ({ conversationId, userId }) => {
@@ -52,13 +52,10 @@ if(websiteParam){
         setConversationId(conversationId);
         setUserId(userId);
         setModalOpen(true);
-        
       });
 
       socket.on("notifyEndConversation", ({ conversationId, userId }) => {
-    
         setMessage("User has ended conversation");
-      
         setConversationId(null);
         setUserId(userId);
         setModalOpen(true);
@@ -97,6 +94,7 @@ if(websiteParam){
       });
    await api.put("/user/update-user", {loggedIn:"Busy"});
    socket.emit('status-change', { userId: user._id, status: 'Busy' });
+   dispatch(loadUser());
       navigate(`/chat?${conversationId}`);
     } else {
    await api.put("/user/update-user", {loggedIn:"Online"});
@@ -131,7 +129,7 @@ if(websiteParam){
   // }, [user]);
 
   useEffect(() => {
-    dispatch(loadUser());
+      dispatch(loadUser());
   }, []);
 
   return (

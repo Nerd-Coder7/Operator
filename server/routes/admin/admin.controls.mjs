@@ -8,7 +8,7 @@ import User from "../../models/user.model.mjs";
 
 export const adminRouter = express.Router();
 
-adminRouter.get("/admin/get-all-operators",isAuthenticated,getAllOperators)
+adminRouter.get("/admin/get-all-operators",getAllOperators)
 adminRouter.get("/get-all-admin-conversation/:id",isAuthenticated,isAdmin, getAllAdminConversations);
 adminRouter.put("/admin/update-operator/:id",isAuthenticated,isAdmin,updateOperator);
 adminRouter.delete("/admin/delete-operator/:id", isAuthenticated,isAdmin, DeleteUser);

@@ -17,6 +17,7 @@ import VerifyPage from "./pages/verify";
 import TransactionPage from "./pages/transaction";
 import ProfilePage from "./pages/profile";
 import SuccessPage from "./pages/success";
+import ChangePasswordPage from "./pages/change-password";
 import FailedPage from "./pages/failed";
 import PrivateRoute from "./utils/PrivateRoute";
 import Users from "./pages/Users";
@@ -66,6 +67,8 @@ export const routes = [
     path: "404",
     element: <NotFoundPage />,
   },
+  { path: "operators-desk", element:  <PublicOperatorsPage /> },
+
   {
     path: "login",
     element: <LoginPage />,
@@ -73,6 +76,10 @@ export const routes = [
   {
     path: "success",
     element: <SuccessPage />,
+  },
+  {
+    path: "change-password",
+    element: <ChangePasswordPage />,
   },
   {
     path: "failed",

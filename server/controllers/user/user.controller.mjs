@@ -7,7 +7,9 @@ import { createActivationToken } from "../../utils/activationToken.mjs";
 import { ErrorHandler } from "../../utils/ErrorHandler.mjs";
 import sendToken from "../../utils/jwtToken.mjs";
 import sendActivationEmail from "../../utils/sendMail.mjs";
-
+import sendNotifyEmail from "../../utils/sendNotifyMail.mjs";
+import { createTemplatePath } from "../../utils/templatePath.mjs";
+import bcrypt from "bcryptjs";
 const registerUser = catchAsyncError(async (req, res, next) => {
   console.log("registerUser--------------------------------",req.body);
   try {
@@ -312,6 +314,55 @@ const deleteUser = catchAsyncError(async (req, res, next) => {
     }
   });
 
+
+  const forgotPassword = catchAsyncError(async (req, res, next) => {
+    console.log("REQ", req.body)
+    try {
+      const { email } = req.body;
+      const user = await User.findOne({ email: email });
+      if (!user) {
+        return next(new ErrorHandler("There's no account by this email.", 400));
+      }
+      const activation = createActivationToken(req.body);
+
+      const redirectLink = `${process.env.APP_URL}/change-password?token=${activation.token}`;
+  
+      const templatePath = createTemplatePath("mails/update_pass_mail.ejs");
+      await sendNotifyEmail(email, templatePath, redirectLink, "Change Password");
+  
+      res.status(200).json({
+        success: true,
+        message: "Confirmation mail sent on your e-mail. Please verify it!",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  });
+
+  const changePassword = catchAsyncError(async (req, res, next) => {
+    try {
+      const { token } = req.body;
+      const { password } = req.body;
+      const updated = await bcrypt.hash(password, 10);
+      if (!token) {
+        return next(new ErrorHandler("Invalid token", 400));
+      }
+      const user = jwt.verify(token, "shivam");
+      const update = await User.findOneAndUpdate(
+        { email: user.email },
+        { password: updated },
+        { new: true }
+      );
+  
+      res.status(200).json({
+        success: true,
+        message: "Your password has been updated",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  });
+
 export {
   getSingleUser,
   getUser,
@@ -323,5 +374,7 @@ export {
   verifyEmail,
   updateUserWallet,
   userWallet,
-  deleteUser
+  deleteUser,
+  forgotPassword,
+  changePassword
 };

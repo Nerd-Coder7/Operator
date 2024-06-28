@@ -154,6 +154,11 @@ io.on("connection", (socket) => {
   });
 
   // when disconnect
+  socket.on("disconnect-user", () => {
+    removeUser(socket.id);
+    io.emit("getUsers", users);
+  });
+  // when disconnect
   socket.on("disconnect", () => {
     console.log(`A user disconnected!`);
     removeUser(socket.id);

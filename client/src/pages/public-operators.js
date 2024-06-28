@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { loadOperators } from "src/redux/actions/admin";
 import OperatorModal from "src/sections/operators/operator-modal";
 import { useSocket } from "src/utils/SocketContext";
@@ -29,7 +30,7 @@ const Page = () => {
   const socketId = useSocket();
   const [status, setStatus] = useState({});
   const [prevOnlineUsers, setPrevOnlineUsers] = useState([]);
-
+const navigate=useNavigate()
   useEffect(() => {
     const handleStatusChange = ({ userId, status }) => {
       setStatus({ userId, status });
@@ -75,6 +76,11 @@ const Page = () => {
   }, [state.operators]);
 
   const handleCardClick = (operator) => {
+    if(!user?._id){
+     alert("Please login first")
+     navigate("/login")
+        return
+    }
     if(operator.loggedIn==="Busy") return alert("Operator is having chat right now")
     setSelectedOperator(operator);
     setIsModalOpen(true);
@@ -92,7 +98,8 @@ const Page = () => {
         operator.loggedIn === "Online" ||  operator.loggedIn === "Busy" &&
         operator?.operatorData?.website?.some((el) => el === websiteID)
     );
-
+    const toShowOpertors = user?._id ? onlineOperators : operators;
+console.log(toShowOpertors)
     // const onlineBusyOperators = operators.filter(
     //   (operator) => onlineCheck(operator) && operator.loggedIn === "Busy"
     // );
@@ -105,7 +112,7 @@ const Page = () => {
       );
     }
 
-    if (onlineOperators.length === 0 ) {
+    if (toShowOpertors.length === 0 ) {
       return (
         <Box display="flex" justifyContent="center" alignItems="center" height="60vh">
           <Typography variant="h6" color="error">
@@ -114,10 +121,9 @@ const Page = () => {
         </Box>
       );
     }
-
     return (
       <Grid container spacing={3} sx={{ padding: 3 }}>
-        {onlineOperators.map((operator) => (
+        {toShowOpertors.map((operator) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={operator._id}>
             <Card
               onClick={() => handleCardClick(operator)}
@@ -150,7 +156,7 @@ const Page = () => {
                     </Typography>
                   </Grid>
                   <Grid item>
-                    {onlineCheck(operator) && operator.loggedIn === "Online" ? (
+                    { operator.loggedIn === "Online" ? (
                       <div
                         style={{
                           width: "13px",

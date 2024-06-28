@@ -72,7 +72,7 @@ export const TopNav = ({toggleDrawer,isMobile}) => {
                 width: 13,
                 height: 13,
                 borderRadius: '50%',
-                backgroundColor: onlineCheck(user) ? 'green' : 'red',
+                backgroundColor: onlineCheck(user) && user?.loggedIn==="Online" ? 'green' : onlineCheck(user) && user?.loggedIn==="Busy" ? "purple" : 'red',
                 border: '2px solid white', // Add border to create space between avatar and status indicator
               }}
             />

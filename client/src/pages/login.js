@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   TextField,
   Button,
@@ -7,6 +7,11 @@ import {
   Typography,
   CircularProgress,
   Paper,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,19 +28,27 @@ const validationSchema = Yup.object({
 
 const Page = () => {
   const [loading, setLoading] = useState(false);
+  const [openForgotPassword, setOpenForgotPassword] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
 
-  // useEffect(() => {
-  //   if (user.role === "admin") {
-  //     navigate("/");
-  //   } else if (user.role === "operator") {
-  //     navigate("/chat");
-  //   } else {
-  //     navigate("/public-operators");
-  //   }
-  // }, []);
+  const handleForgotPassword = async () => {
+    setForgotPasswordLoading(true);
+    try {
+      const { data } = await api.post(`/user/forgot-user`, {
+        email: forgotPasswordEmail,
+      });
+      alert(data.message);
+      setOpenForgotPassword(false);
+    } catch (err) {
+      alert(err.response.data.message || "Failed to send reset password email.");
+    } finally {
+      setForgotPasswordLoading(false);
+    }
+  };
 
   const handleLogin = async (values, { setSubmitting, setErrors }) => {
     setLoading(true);
@@ -154,8 +167,17 @@ const Page = () => {
                     >
                       {loading ? <CircularProgress size={24} /> : "Login"}
                     </Button>
-                    <Box marginTop={1} textAlign={'end'}>
-                    <Link  to="/register">I don't have an account</Link></Box>
+                    <Box marginTop={1} display={'flex'} justifyContent={'space-between'}>
+                      <Typography
+                        variant="body2"
+                        color="primary"
+                        onClick={() => setOpenForgotPassword(true)}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        Forget Password
+                      </Typography>
+                      <Link to="/register">I don't have an account</Link>
+                    </Box>
                   </Box>
                 </Form>
               )}
@@ -163,6 +185,36 @@ const Page = () => {
           </Box>
         </Paper>
       </Container>
+      <Dialog open={openForgotPassword} onClose={() => setOpenForgotPassword(false)}>
+        <DialogTitle>Forgot Password</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please enter your email address. We will send you an email to reset your password.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="forgot-password-email"
+            label="Email Address"
+            type="email"
+            fullWidth
+            value={forgotPasswordEmail}
+            onChange={(e) => setForgotPasswordEmail(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenForgotPassword(false)} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleForgotPassword}
+            color="primary"
+            disabled={forgotPasswordLoading}
+          >
+            {forgotPasswordLoading ? <CircularProgress size={24} /> : "Submit"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

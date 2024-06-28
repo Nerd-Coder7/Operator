@@ -17,6 +17,7 @@ const Page = () => {
   const state = useSelector((state) => state.admin);
   const [orders, setOrders] = useState(state.operators);
   const [transactions, setTransactions] = useState([]);
+  const [sessions, setSessions] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -24,8 +25,10 @@ const Page = () => {
     dispatch(loadOperators());
     const fetchData = async () => {
       try {
-        const data = await api.get("/payment/transactions");
-        setTransactions(data?.data?.data);
+        const transactionsData = await api.get("/payment/transactions");
+        const sessionsData = await api.get("/session/admin/get-all-chat-sessions");
+        setTransactions(transactionsData?.data?.data);
+        setSessions(sessionsData?.data);
       } catch (err) {
         console.log(err, "ERROR");
       }
@@ -40,7 +43,11 @@ const Page = () => {
         transaction: 0,
         weeklyTransaction: 0,
         monthlyTransaction: 0,
-        yearlyTransaction: 0
+        yearlyTransaction: 0,
+        totalMinutes: 0,
+        dailyMinutes: 0,
+        weeklyMinutes: 0,
+        monthlyMinutes: 0
       };
       return acc;
     }, {});
@@ -62,10 +69,21 @@ const Page = () => {
       }
     });
 
+    console.log(operatorTransactionMap,sessions)
+    sessions.forEach(session => {
+      if (session && operatorTransactionMap[session._id.receiver]) { // Ensure session exists
+        operatorTransactionMap[session._id.receiver].totalMinutes += session.total || 0;
+        operatorTransactionMap[session._id.receiver].dailyMinutes += session.day || 0;
+        operatorTransactionMap[session._id.receiver].weeklyMinutes += session.week || 0;
+        operatorTransactionMap[session._id.receiver].monthlyMinutes += session.month || 0;
+      }
+    });
+    
+
     const updatedOperators = Object.values(operatorTransactionMap);
 
     setOrders(updatedOperators.slice(page * rowsPerPage, (page + 1) * rowsPerPage));
-  }, [state.operators, page, rowsPerPage, transactions]);
+  }, [state.operators, page, rowsPerPage, transactions, sessions]);
 
   const handleModeChange = useCallback((event, value) => {
     if (value) {
@@ -91,6 +109,8 @@ const Page = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0); // Reset to first page whenever rows per page changes
   }, []);
+
+console.log(orders,"ALL ORDERS")
 
   return (
     <>

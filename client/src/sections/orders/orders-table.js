@@ -330,10 +330,18 @@ console.log(items,"items")
                     )}
                     </TableCell>
                   <TableCell style={{display:"flex",flexDirection:"column"}}>
-                  <Typography color="inherit" variant="inherit">     Settimanalmente: €{order?.weeklyTransaction} </Typography>
-                  <Typography color="inherit" variant="inherit">  Mensile: €{order?.monthlyTransaction} </Typography>
-                  <Typography color="inherit" variant="inherit">    Annuale:  €{order?.yearlyTransaction} </Typography>
-                  <Typography color="inherit" variant="inherit">          Totale: €{order?.transaction} </Typography>
+                  <Typography color="inherit" variant="inherit">
+            <strong>Settimanalmente:</strong> €{order?.weeklyTransaction}  <strong>Day:</strong>:{order?.dailyMinutes}min
+          </Typography>
+          <Typography color="inherit" variant="inherit">
+            <strong>Mensile:</strong> €{order?.monthlyTransaction}  <strong>Settimanalmente:</strong>{order?.weeklyMinutes}min
+          </Typography>
+          <Typography color="inherit" variant="inherit">
+            <strong>Annuale:</strong> €{order?.yearlyTransaction} <strong>Mensile:</strong>:{order?.monthlyMinutes}min
+          </Typography>
+          <Typography color="inherit" variant="inherit">
+            <strong>Totale:</strong> €{order?.transaction}  <strong>Totale:</strong>:{order?.totalMinutes}min
+          </Typography>
                
               
             

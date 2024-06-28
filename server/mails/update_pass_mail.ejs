@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Activation</title>
+    <title>Campaign Participation</title>
     <style>
         /* Reset styles */
         body, h1, p, a {
@@ -47,7 +47,7 @@
 
         /* Link styles */
         a {
-            color: #ffffff;
+            color: #007bff;
             text-decoration: none;
         }
 
@@ -61,13 +61,13 @@
             text-decoration: none;
             transition: background-color 0.3s ease;
             color: #ffffff;
-            font-weight: bolder;
+            font-weight: bold;
             margin-bottom: 10px;
+            border: none;
         }
 
         button:hover {    
-            background-color: #fafafa;
-            color: black;
+            background-color: #0056b3;
         }
 
         /* Strong styles */
@@ -80,18 +80,24 @@
         .logo {
             display: block;
             height: auto;
+            margin-bottom: 10px;
+        }
+        .flexed_data {
+            display: flex;
+            align-items: center;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="https://aronwebsolutions.com/public/uploads/aron-logo-2.png" alt="Company Logo" class="logo">
-        <h1>Welcome <%= username %>!</h1>
-        <p>Thank you for signing up!</p>
-        <p>Please click the following button to activate your account:</p>
-        <a href="<%= activationLink %>" class="btn"><button>Activate Account</button></a>
-        <p>If the above button doesn't work, you can copy and paste the following activation code into your browser:</p>
-        <p>If you did not sign up for an account, please ignore this email.</p>
+        <div class="flexed_data">
+            <img src="https://alwaleed-cyber-quiz.vercel.app/logo192.png" alt="Company Logo" class="logo">
+            <h2>Company</h2>
+        </div>
+        <h1>Hello there</h1>
+        <p>Please click the following button to change the password:</p>
+        <a href="<%= redirectLink %>"><button>Change password</button></a>
+        <p>If you did not expect to receive this email or have any questions, please contact us or ignore it.</p>
         <p>Thank you,<br><strong>Company Ltd.</strong></p>
     </div>
 </body>
